@@ -1,0 +1,35 @@
+name: coroots
+channels:
+  - pytorch
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.7
+  - pip
+  - numpy
+  - pillow
+  - yaml
+  - pyyaml
+  - protobuf
+  - tqdm
+  - pytorch=1.11
+  - torchvision
+  - cudatoolkit=11.3
+  - transformers
+  - nltk
+  - statsmodels
+  - scikit-learn
+  - pip:
+    - django==2.0.13
+    - gunicorn
+    - django-heroku
+    - requests
+    - django-import-export==2.4.0
+    - google-cloud-dialogflow
+    - google-auth
+    - dj-database-url
+    - pymysql
+    - mysqlclient==2.0.3
+    - sagemaker
+    - django-compressor
+    - django-compressor-toolkit

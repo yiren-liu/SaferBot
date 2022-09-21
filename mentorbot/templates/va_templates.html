@@ -1,0 +1,535 @@
+<template id="suggestion_block_template">
+	<div class="suggestion_block">
+		<div class="detail">
+			<button><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span></button>
+			<span class="description"></span>
+		</div>
+		<div class="chart">
+			<div class="visual"></div>
+			<div class="trend-center">&#10230;</div>
+			<div class="trend-center-bottom">&#10230;</div>
+			<div class="trend-left">&#10230;</div>
+			<div class="trend-right">&#10230;</div>
+		</div>
+	</div>
+</template>
+
+<template id="hypothesis_input_template">
+	<div>
+		Causal Relationship: From <span id="hypothesis_from"></span> to <span id="hypothesis_to"></span><br>
+		<textarea id="hypothesis_textarea" placeholder="Please provide an explanation and/or an example of how the variable might influence the other."></textarea>
+		<button type="button" id="save_hypothesis" class="btn btn-sm float-right btn-success" disabled>Save</button>
+		<button type="button" id="delete_edge" class="btn btn-sm float-right btn-danger mr-1">Delete Arrow</button>
+		<button type="button" id="hide_hypothesis" class="btn btn-sm float-right btn-secondary mr-1">Hide</button>
+	</div>
+</template>
+
+<template id="entered_hypotheses_list_template">
+	<div class="entered_hypotheses_list">
+		<div class="card" style="width: 100%;">
+			<div class="card-header">
+				Causal Relationships
+			</div>
+			<ul class="list-group list-group-flush">
+				<li id="empty_item" class="list-group-item"><i>No entered relationshps yet.</i></li>
+			</ul>
+		</div>
+	</div>
+</template>
+
+<template id="entered_hypotheses_list_item_template">
+	<li class="list-group-item pb-4">
+		<!-- <button type="button" class="delete_edge btn btn-outline-secondary btn-sm float-right mb-1"><i class="fas fa-trash-alt"></i></button>
+		<span class="v_from variable_name"></span> &#8594; <span class="v_to variable_name"></span><br> -->
+		<div class="d-flex mb-1">
+			<div class="mr-auto my-auto">
+				<span class="v_from variable_name"></span> &#8594; <span class="v_to variable_name"></span>	
+			</div>
+			<div>
+				<button type="button" class="delete_edge btn btn-outline-secondary btn-sm"><i class="fas fa-trash-alt"></i></button>
+			</div>
+			
+		</div>
+		<textarea class="hypothesis rounded form-control" placeholder="Please provide an explanation (why one thing affects the other) and/or an example (e.g., a positive or negative impact)."></textarea>
+		<div class="effect-magnitude mt-1">
+			Effect Strength:
+			<div class="d-flex justify-content-center magnitude-input-div">
+				<span class="mx-1">weak</span>
+				<input type="range" class="mt-1 custom-range magnitude-input" min="1" max="5">
+				<span class="mx-1">strong</span>
+			</div>
+			
+		</div>
+		
+		<div class="mt-1 reaction" style="display: none">
+			<hr>
+			<form class="mb-2">
+				<div class="form-check new_idea">
+					<input type="checkbox" class="form-check-input new_idea_checkbox" id="">
+					<label class="form-check-label" for="">I have not considered this before</label>
+				</div>	
+			</form>
+			
+			<!-- <button type="button" class="btn btn-outline-secondary btn-sm new_idea"><i class="fas fa-lightbulb"></i></button> -->
+			<strong>Vote:</strong>
+			<div class="btn-group" role="group" aria-label="voting">
+				<button type="button" class="btn btn-outline-secondary btn-sm upvote"><i class="fas fa-plus"></i></button>
+				<button type="button" class="btn btn-outline-secondary btn-sm downvote"><i class="fas fa-minus"></i></button>
+			</div>
+			<span class="float-right">
+				<strong></strong> <button type="button" class="btn btn-outline-secondary btn-sm leave-comment"><i class="fas fa-comment"></i> Comment</button>
+			</span>
+			<textarea class="rounded form-control comment mt-1" placeholder="Leave your comment." style="display: none"></textarea> 
+		</div>
+		
+		<!-- <button type="button" class="save_hypothesis btn btn-sm float-right btn-success mt-1" disabled>Save</button>
+		<button type="button" class="delete_edge btn btn-sm float-right btn-danger mr-1 mt-1">Delete Arrow</button> -->
+		<!-- <button type="button" class="hide_hypothesis btn btn-sm float-right btn-secondary mr-1">Hide</button> -->
+	</li>
+</template>
+
+<template id="stakeholder_legend_template">
+	<div id="stakeholder_legend" class="clearfix"> <!-- clearfix makes the objects after this div stay below -->
+		<div class="attribute float-left">Stakeholder:</div>
+	</div>
+</template>
+
+<template id="stakeholder_legend_item_template">
+	<div class="legend_item float-left">
+		<div class="legend_color float-left" style="background-color: green">&nbsp;</div>
+		<div class="legend_title float-left"></div>
+	</div>
+</template>
+
+<!-- 
+	In top_panel_buttons
+ -->
+<template id="add_new_variable_template">
+	<button class="btn btn-primary btn-sm" type="button" data-toggle="modal" data-target="#add_variable_modal">
+		Add a New Variable</button>
+	<div class="modal fade" id="add_variable_modal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Add a New Variable</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group row">
+							<label for="variable_name" class="col-sm-4 col-form-label">Name</label>
+							<div class="col-sm-8">
+								<input type="text" class="form-control border" id="variable_name" value="">	
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="variable_type" class="col-sm-4 col-form-label">Type</label>
+							<div class="col-sm-8">
+								<div class="dropdown">
+									<button class="btn border dropdown-toggle w-100 text-left" 
+										type="button" id="variable_type" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<span><i>select variable type</i></span>
+									</button>
+									<div class="dropdown-menu w-100" aria-labelledby="variable_type">
+										<a class="dropdown-item">categorical</a>
+										<a class="dropdown-item">binary</a>
+										<a class="dropdown-item">numerical</a>										
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="variable_description" class="col-sm-4 col-form-label">Description</label>
+							<div class="col-sm-8">
+								<textarea type="text" class="form-control border" id="variable_description" value=""></textarea>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="variable_stakeholder" class="col-sm-4 col-form-label">Stakeholder</label>
+							<div class="col-sm-8">
+								<div class="dropdown">
+									<button class="btn border dropdown-toggle w-100 text-left" type="button" id="variable_stakeholder" 
+										data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<span><i>select or create stakeholder</i></span>
+									</button>
+									<div class="dropdown-menu w-100" aria-labelledby="variable_stakeholder">
+										<!-- <a class="dropdown-item">option 1</a> -->
+										<div class="dropdown-divider"></div>
+										<div class="dropdown-item input-group">
+											<input type="text" class="form-control" id="new_stakeholder" placeholder="Create new stakeholder">	
+											<div class="input-group-append">
+												<a class="input-group-text create-button hover-pointer">+</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-sm btn-success" id="confirm">Confirm</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template id="inspiration_template">
+	<button id="inspiration_button" class="btn btn-info btn-sm" type="button">Inspire Me!</button>
+	<div class="modal fade" id="inspiration_modal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog" role="document"> <!-- modal-dialog-centered -->
+			<div class="modal-content">
+				<div class="modal-header cursor-move">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Do you think...</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div id="one_variable_inspiration" style="display: none">
+						<span class="v1 variable_name"></span> might influence, or be influenced by other variables?
+					</div>
+					<div id="two_variables_inspiration" style="display: none">
+						it is possible that <span class="v1 variable_name"></span> might directly influence <span class="v2 variable_name"></span>?	
+					</div>
+					<div id="reject_reason" style="display: none">
+						<hr>
+						Please explain why you don't think there is a causal relationship between the two.
+						<textarea class="rounded form-control" placeholder="e.g., There is no way X would affect Y because..."></textarea>
+					</div>
+				</div>
+				<div class="modal-footer" id="normal_footer">
+					<button type="button" class="btn btn-sm btn-success" id="response_yes" data-dismiss="modal">
+						Yes
+					</button>
+					<button type="button" class="btn btn-sm btn-info" id="response_reverse" data-dismiss="modal">
+						The Other Way Around
+					</button>
+					<button type="button" class="btn btn-sm btn-secondary" id="response_no">No</button>
+				</div>
+				<div class="modal-footer" id="reject_footer" style="display: none;">
+					<button type="button" class="btn btn-sm btn-secondary" id="next">Next</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template id="crowd_inspiration_template">
+	<!-- add 'data-backdrop="false"' on .modal to avoid background backdrop -->
+	<div class="modal fade" id="crowd_inspiration_modal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog" role="document"> <!-- modal-dialog-centered -->
+			<div class="modal-content">
+				<div class="modal-header cursor-move">
+					<h5 class="modal-title" id="exampleModalCenterTitle">5 peers suggested...</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div>
+						<span class="v1 variable_name">Anonymous</span> might directly influence <span class="v2 variable_name">Replied</span>.
+						<table class="table table-bordered mt-2">
+							<thead>
+								<tr>
+									<th scope="col">#</th>
+									<th scope="col">Narrative</th>
+									<th scope="col">Strength</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<th scope="row">1</th>
+									<td>people who choose to reveal their identity will have a higher chance of getting replies because it is more serious</td>
+									<td>3</td>
+								</tr>
+								<tr>
+									<th scope="row">2</th>
+									<td>if person chooses to be not anonymous, police would be more likely to reply</td>
+									<td>4</td>
+								</tr>
+								<tr>
+									<th scope="row">3</th>
+									<td>If a person tries to hid the identity then maybe the event that he/she's reporting is more dangerous.</td>
+									<td>3</td>
+								</tr>
+								<tr>
+									<th scope="row">4</th>
+									<td>An anonymous report may be a spam one and may not be replied.</td>
+									<td>1</td>
+								</tr>
+								<tr>
+									<th scope="row">5</th>
+									<td>normally if tips are reported anonymously, there would be more chance of meaningless tips because reporters think they have no responsibility of reporting and they would not be traced back in the system.</td>
+									<td>5</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer" id="normal_footer">
+					<button type="button" class="btn btn-sm btn-success" id="response_yes" data-dismiss="modal">
+						Add Arrow
+					</button>
+					<button type="button" class="btn btn-sm btn-info" id="response_reverse" data-dismiss="modal">
+						Add Reversed Arrow
+					</button>
+					<button type="button" class="btn btn-sm btn-secondary" id="response_no">Skip</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template id="crowd_narratives_template">
+	<li class="list-group-item pb-4">
+		<button class="btn btn-sm btn-primary float-right add-arrow-btn" style="padding: 0.1rem 0.3rem; font-size: 0.7rem;">Add This Arrow</button>
+		<span class="v_from variable_name"></span> &#8594; <span class="v_to variable_name"></span>: <br>
+		<span class="narrative_num" style="font-weight: bold;">5</span> people created this arrow
+		<table class="table table-bordered table-hover mt-2">
+			<thead>
+				<tr>
+					<th scope="col" class="align-middle text-center">pid</th>
+					<th scope="col" class="align-middle text-center">Narrative</th>
+					<th scope="col" class="align-middle text-center">Strength <i>(desc.)</i></th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</li>
+</template>
+
+<template id="crowd_narratives_tr_template">
+	<tr>
+		<th scope="row" class="username text-center"></th>
+		<td class="narrative"></td>
+		<td class="magnitude text-center"></td>
+	</tr>
+</template>
+
+
+
+<template id="finsih_task_button_template">
+	<button class="btn btn-secondary btn-sm ml-3" type="button" data-toggle="modal" data-target="#finish_task">
+	Finish</button>
+	<div class="modal fade" id="finish_task" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Finishing task...</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					Are you positive that there are no more causal hypotheses?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">
+						No.
+					</button>
+					<a href="/finish/" type="button" class="btn btn-primary">
+						Yes, finish.
+					</a>
+					<!-- <button type="button" class="btn btn-primary" data-dismiss="modal">Let me think about it</button> -->
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template id="regression_feature_template">
+	<div class="w-100 h-100 p-3 card-container regressions_panel" run-id="-1">
+		<div class="card mb-1" id="selected_variable">
+			<div class="card-header" id="selected_variable_header" data-toggle="collapse" data-target="#collapse_selected" aria-expanded="true" aria-controls="collapseOne">
+				Regressions Among Selected Variables (excl. other variables)
+				<div class="float-right">
+					<i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top"
+					   title="These regressions only use the selcted variables as IV or DV, based on the causal diagram"></i>
+				</div>
+			</div>
+
+			<div id="collapse_selected" class="collapse show" aria-labelledby="selected_variable_header">
+				<div class="card-body">
+				</div>
+			</div>
+		</div>
+		
+		<!-- <div class="card mb-1" id="each_variable">
+			<div class="card-header" id="each_variable_header" data-toggle="collapse" data-target="#collapse_each_variable" aria-expanded="true" aria-controls="collapseOne">
+				Regressions for Each Selected Variables
+				<div class="float-right">
+					<i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top"
+					   title="These regressions test each variable as DV and their parent variables as IVs."></i>
+				</div>
+			</div>
+
+			<div id="collapse_each_variable" class="collapse show" aria-labelledby="each_variable_header">
+				<div class="card-body">
+				</div>
+			</div>
+		</div> -->
+
+		
+		<div class="card mb-1" id="path_analysis">
+			<div class="card-header" id="path_analysis_header" data-toggle="collapse" data-target="#collapse_path_analysis" aria-expanded="true" aria-controls="collapseOne">
+				Regressions for All Variables in Diagram (incl. all parent nodes)
+				<div class="float-right">
+					<i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top"
+					   title='Similar to "Regressions for Each Variable", but this tests all variable in the graph'></i>
+				</div>
+			</div>
+
+			<div id="collapse_path_analysis" class="collapse show" aria-labelledby="path_analysis">
+				<div class="card-body">
+				</div>
+			</div>
+		</div>
+	</div>	
+</template>
+
+<template id="regression_result_template">
+	<div class="regression-result loading">
+		<span class="result-text"></span> <i class="fas fa-spinner fa-spin"></i>
+	</div>
+	<div class="regression-result loaded">
+		<span class="result-text">Replied ~ <strong>Anonymous (*)</strong> + Text Length + Has Location + Category</span> <button class="btn btn-info btn-statistics collapsed" data-toggle="collapse" data-target="#test_id">stats <span class="collapse-sign"></span></button>
+
+		<div id="test_id" class="collapse mt-3 collapse-statistics">
+			<div class="bg-dark rounded p-1">
+				<pre class="text-white">test</pre>
+			</div>
+		</div>
+	</div>
+</template>
+
+<!-- This template contains critical components of a causal diagram: 
+	GraphUI, 
+	Stakeholder Legend, 
+	Hypothesis Panel,
+	Variable Details Panel -->
+<template id="core_graph_interface_template">
+	<div class="core_model_container">
+		<!-- <div class="mb-1">
+			<span class="title"></span>
+		</div> -->
+		
+		<div class="stakeholder-panel panel-bordered"></div>
+		<div class="main-panel position-relative panel-bordered panel-margin-top">
+			<div class="graph-ui panel-bordered disable-select"></div>
+			<div class="hypothesis-panel position-absolute panel-bordered"></div>	
+		</div>
+		<div class="variable-detail-panel panel-bordered">
+			Variable <span class="name font-weight-bold"><i>name</i></span> <span class="type badge badge-secondary"></span>: <span class="long-description"><i>description (hover over a variable to view its description)</i></span>
+		</div>
+	</div>
+</template>
+
+<template id="CR_layout_template">
+	<div class="panel-container CR-layout">
+		<div class="graph-ui"></div>
+		<div class="panel-grow narrative-panel"></div>
+		<hr>
+		<div class="panel-grow variable-info-panel">
+			Variable <span class="name font-weight-bold"><i>name</i></span> <span class="type badge badge-secondary"></span>: <span class="long-description"><i>description (hover over a variable to view its description)</i></span>
+		</div>
+	</div>
+</template>
+
+<template id="peer_diagrams_template">
+	<div>
+		<ul class="nav nav-tabs" id="peer_diagrams_tabs" role="tablist"></ul>
+		<div class="tab-content" id="peer_diagrams_panels"></div>
+	</div>
+</template>
+
+<template id="peer_diagrams_tab_template">
+	<li class="nav-item">
+		<a class="nav-link" id="first-tab" data-toggle="tab" href="#first" role="tab" aria-controls="first" aria-selected="true">First</a>
+	</li>
+</template>
+
+<template id="peer_diagrams_panel_template">
+	<div class="tab-pane fade" id="first" role="tabpanel" aria-labelledby="first-tab"></div>
+</template>
+
+<template id="crowd_hint_template">
+	<div class="crowd-hint">
+		<!-- <h6><i class="far fa-lightbulb"></i> Ideas from the Folks</h6> -->
+		<div class="mb-4">
+			<!-- <h6 class="mb-2"><i class="far fa-comments"></i> Narratives About the Arrow</h6> -->
+			<h6 class="mb-2"><i class="far fa-comments"></i> What People Say About the Arrow?</h6>
+			<div class="same-arrow mb-2" style="display: none">
+				<div class="progress" style="height: 0.5rem;">
+					<div class="progress-bar" role="progressbar" style="width: 0%;"></div>
+				</div>
+				<div class="mb-1">
+					<span class="crowd-pct font-weight-bold">0</span>% of the crowd drew the same arrow, <span class="v_from variable_name"></span> &#8594; <span class="v_to variable_name"></span>.
+				</div>
+				<div class="card">
+					<div class="card-header collapsed" data-toggle="collapse" data-target="#same_narratives">
+						<span>Review Their Narratives</span>
+						<!-- <span class="peer-count font-weight-bold"></span> people created this arrow  -->
+						<span class="collapse-sign"></span>
+					</div>
+					<div id="same_narratives" class="card-body collapse">
+						<span class="peer-count font-weight-bold"></span> people created this arrow 
+						<div class="narrative-table"></div>
+					</div>
+				</div>
+			</div>
+			<div class="reverse-arrow" style="display: none">
+				<div class="progress" style="height: 0.5rem;">
+					<div class="progress-bar" role="progressbar" style="width: 0%;"></div>
+				</div>
+				<div class="mb-1">
+					<span class="crowd-pct font-weight-bold">0</span>% of the crowd drew the reverse arrow, <span class="v_from variable_name"></span> &#8594; <span class="v_to variable_name"></span>.	
+				</div>
+				<div class="card">
+					<div class="card-header collapsed" data-toggle="collapse" data-target="#reverse_narratives">
+						<span>Review Their Narratives</span>
+						<!-- <span class="peer-count font-weight-bold"></span> people created this arrow  -->
+						<span class="collapse-sign"></span></div>
+					<div id="reverse_narratives" class="card-body collapse">
+						<span class="peer-count font-weight-bold"></span> people created this arrow 
+						<div class="narrative-table"></div>
+					</div>
+				</div>
+			</div>	
+		</div>
+		<div class="mb-2 further-arrows">
+			<!-- <h6 class="mb-2"><i class="fab fa-hubspot fa-flip-horizontal"></i> Ideas of New Arrows</h6> -->
+			<h6 class="mb-2"><i class="fab fa-hubspot fa-flip-horizontal"></i> Add New Arrows?</h6>
+			<div class="content" style="display: none;">
+				<p class="mb-1">Below are new arrows that are not on your diagram but drawn by some other people. Blue variables are not included in your diagram as well.</p>
+				<table class="arrow-table table table-bordered table-hover">
+					<thead class="thead-dark">
+						<tr>
+							<th scope="col">From</th>
+							<th scope="col">To</th>
+							<th scope="col">% of People</th>
+							<th scope="col">Action</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+					<template class="d-none tr">
+						<tr class="cursor-pointer">
+							<td class="align-middle">Anonymous</td>
+							<td class="align-middle"><span>Replied</span></td>
+							<td class="align-middle"><span class="font-weight-bold">5%</span> drew this</td>
+							<td class="align-middle"><button class="btn btn-sm btn-secondary">Add Arrow</button></td>
+						</tr>
+					</template>
+				</table>
+				<!-- <p class="mb-1 font-italic">Click a row above to review the narratives.</p> -->
+				<p class="mb-1 font-weight-bold narrative-title">Narratives of <span class="v_from variable_name"></span> &#8594; <span class="v_to variable_name"></span>:</p>
+				<div class="arrow-narratives"></div>
+			</div>
+			
+		</div>
+		
+	</div>
+</template>

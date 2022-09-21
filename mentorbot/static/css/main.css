@@ -1,0 +1,504 @@
+panel-container:root {
+	--uiuc-blue: #002755;
+	--uiuc-orange: #e84927;
+}
+
+/*
+	Utility Classes
+*/
+
+.cursor-pointer {
+	cursor: pointer;
+}
+
+.font-b {
+	font-weight: bold;
+}
+
+.font-i {
+	font-style: italic;
+}
+
+.font-bi {
+	font-weight: bold;
+	font-style: italic;
+}
+
+img {
+	image-rendering: -moz-crisp-edges;
+	/* Firefox */
+	image-rendering: -o-crisp-edges;
+	/* Opera */
+	image-rendering: -webkit-optimize-contrast;
+	/* Webkit (non-standard naming) */
+	image-rendering: crisp-edges;
+	-ms-interpolation-mode: nearest-neighbor;
+	/* IE (non-standard property) */
+}
+
+/*
+	A basic example of collapsable elements
+	<div data-toggle="collapse" data-target="#<unique-id>">
+	  <span class="collapse-arrow"></span>
+	</div>
+	<div class="collapse show" id="<unique-id>"></div>
+*/
+
+[data-toggle="collapse"] {
+	cursor: pointer;
+}
+
+.collapsed .collapse-arrow:after {
+	content: " \25BC";
+}
+
+.collapse-arrow:after {
+	content: " \25B2";
+}
+
+.collapsed .collapse-sign:after {
+	content: " \002B";
+	font-weight: bold;
+}
+
+.collapse-sign:after {
+	content: " \2212";
+	font-weight: bold;
+}
+
+/*
+	To enhance UI when using li in dropdown-menu
+*/
+
+li.dropdown-item.disabled {
+	cursor: not-allowed;
+}
+
+li.dropdown-item {
+	cursor: default;
+}
+
+/*
+	A simple grid system for bordered panels
+
+	Usage
+	- Use .panel-container as the container. The direct div children will be bordered.
+	- Use w-* or width to specify the width of each panel.
+	- Use <hr> to break a new line. This is needed for flex and border rendering.
+	- Use .panel-grow to let this panel grow (stretch) the row.
+
+	Note
+	- The actual width and height may be smaller than specified due to border behavior.
+
+	Example
+
+	<div class="panel-container" style="width: 900px; flex-wrap: wrap;">
+		<div class="w-100">1</div>
+		<hr>
+		<div class="" style="width: 500px;">2</div>
+		<div class="panel-grow">3</div>
+		<hr>
+		<div class="w-25">4</div>
+		<div class="w-25">5</div>
+		<div class="w-25">6</div>
+		<hr>
+		<div class="w-50">7</div>
+	</div>
+*/
+
+:root {
+	--panel-border: 1px solid gray;
+}
+
+.panel-container {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	box-shadow: 0 10px 16px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%) !important;
+	z-index: 99;
+}
+
+/* hr force flexbox to create a new row */
+.panel-container>hr {
+	margin: 0px;
+	border: 0px;
+	flex-basis: 100%;
+}
+
+/* only the first div, and the first div after each hr have left border */
+.panel-container>div {
+	border: var(--panel-border);
+	border-left: 0px;
+}
+
+.panel-container>div:first-of-type, .panel-container>hr+div {
+	border-left: var(--panel-border);
+}
+
+/* only the div before the first hr have top border  */
+.panel-container>hr~div {
+	border-top: 0px;
+}
+
+/* a helper class to strecth a div without specifying width */
+.panel-container>div.panel-grow {
+	flex-grow: 1;
+	flex-basis: 0;
+}
+
+/* column version */
+.panel-container.panel-container-col {
+	flex-direction: column;
+}
+
+/* We still need this to configure border, but do not break panels into new columns */
+.panel-container.panel-container-col>hr {
+	flex-basis: 0;
+}
+
+
+/*
+	Login page
+*/
+
+#login.card {
+	width: 500px;
+}
+
+
+
+/*
+	safety report form input css
+*/
+input[type=text] {
+	background-color: papayawhip;
+	color: black;
+	/* border: none; */
+	border-radius: 3px;
+}
+
+input[type=text]:focus {
+	background-color: white;
+}
+
+
+
+/* UIPD Safety Tips */
+.safety-tips {
+	position: relative;
+	overflow: hidden;
+	padding: 1rem 0;
+	/* z-index: 0; */
+	box-shadow: 0px -15px 10px 10px rgb(0 0 0 / 20%);
+}
+
+.safety-tips>img {
+	position: absolute;
+	width: 100%;
+	z-index: -3;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	opacity: 0.7;
+	-webkit-filter: invert(1);
+	filter: invert(1);
+}
+
+.safety-tips>h2 {
+	text-align: center;
+	color: #13294b;
+	z-index: -1;
+	position: relative;
+	font-family: Montserrat, sans-serif;
+	margin: 1em 0 0;
+	line-height: 1em;
+	padding: 1em;
+	border-bottom: 0;
+	font-weight: 600;
+	font-size: 50px;
+	font-size: 3.125rem
+}
+
+.safety-tips p {
+	text-align: center;
+	margin-bottom: 5em
+}
+
+.safety-tips p>a.button {
+	z-index: 1;
+	color: #13294b;
+	border: 2px solid #13294b;
+	position: relative;
+	display: inline-block;
+	font-weight: 600;
+}
+
+a.button, button, input[type=submit] {
+	transition: all .25s ease-in-out 0s;
+	border: 2px solid #fff;
+	color: #fff;
+	padding: .7em 1em;
+	font-weight: 600;
+	font-size: 19px;
+	font-size: 1.1875rem;
+	background: none;
+	font-family: Source Sans Pro, sans-serif;
+}
+
+a.button:focus, a.button:hover, button:focus, button:hover, input[type=submit]:focus, input[type=submit]:hover {
+	background: #fff;
+	color: #13294b
+}
+
+footer {
+	background-color: #13294b;
+	padding: 2em 0
+}
+
+.title {
+	font-family: Montserrat, sans-serif;
+}
+
+.title-header {
+	font-family: Montserrat, sans-serif;
+	font-size: 50px;
+	font-weight: 400;
+	color: #ffffff;
+	background-color: #13294b;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	padding: 0.5rem 1.0rem;
+	margin-bottom: 0;
+	text-align: center;
+	z-index: 1;
+}
+
+.text-info-panel {
+	font-family: Montserrat, sans-serif;
+	font-weight: bold;
+}
+
+.text-info-panel.unselectable {
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
+video {
+	position: relative;
+	left: 0;
+	top: 0;
+	height: 100%;
+	width: 100%;
+}
+
+video::-webkit-media-controls-fullscreen-button,
+video::-webkit-media-controls-timeline,
+video::-webkit-media-controls-rewind-button {
+	display: none;
+}
+
+
+
+/* pop up modal card  */
+/* #popup_card {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    visibility:hidden;
+    display:none;
+}
+#popup_card:target {
+    visibility: visible;
+    display: block;
+} */
+.reveal-modal {
+	background: #e1e1e1;
+	margin: 0 auto;
+	height: 600px;
+	width: 1000px;
+	position: relative;
+	z-index: 41;
+	top: 25%;
+	padding: 30px;
+	-webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+.modal {
+	display: none;
+	/* Hidden by default */
+	position: fixed;
+	/* Stay in place */
+	/* z-index: 99; */
+	padding-top: 100px;
+	/* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%;
+	/* Full width */
+	height: 100%;
+	/* Full height */
+	overflow: auto;
+	/* Enable scroll if needed */
+	background-color: rgb(0, 0, 0);
+	/* Fallback color */
+	background-color: rgba(0, 0, 0, 0.4);
+	/* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+	background-color: #fefefe;
+	margin: auto;
+	/* padding: 20px; */
+	/* border: 10px solid #888; */
+	border-radius: 10px;
+	width: 1200px;
+}
+
+/* The Close Button */
+.close {
+	color: #aaaaaa;
+	float: right;
+	font-size: 3rem;
+	font-weight: bold;
+	float: inline-end;
+}
+
+.close:hover,
+.close:focus {
+	color: #000;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.chat-icon {
+	height: 60px;
+	width: 60px;
+	border-radius: 50%;
+	background: rgb(231, 100, 67);
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.modal-header {
+	display: inline-block;
+	font-family: Montserrat, sans-serif;
+	font-size: 50px;
+	font-weight: 400;
+	color: #ffffff;
+	/* background-color: #13294b; */
+	/* border-top-left-radius: 10px; */
+	/* border-top-right-radius: 10px; */
+}
+
+.modal-header h2 {
+	text-align: center;
+}
+
+.modal-cell {
+	display: flex;
+	align-items: center;
+	margin: 1rem;
+	/* font-family: "Montserrat, sans-serif"; */
+}
+
+.modal-cell p {
+	margin: 1rem;
+}
+
+
+/* dropdown button  */
+.event-button, .event-button-expand {
+	background-color: #13294b;
+	border-color: white;
+	border-radius: 3rem;
+	/* height: 2rem; */
+	/* width: 2rem; */
+	font-size: small;
+}
+
+.event-button.selected {
+	background-color: rgb(231, 100, 67);
+	/* border-color: rgb(231, 100, 67); */
+	color: white;
+	transition: all .25s ease-in-out 0s;
+}
+
+
+/* cancel button hover animation */
+.fa.fa-times:hover {
+	transform: rotate(180deg);
+}
+
+.fa.fa-times {
+	transition: transform 0.5s ease 0s;
+}
+
+.input-group-append.location-button>.input-group-text:hover {
+	cursor: pointer;
+	background-color: #dcdee0;
+	/* color: white; */
+	transition: all .1s ease-in-out 0s;
+}
+
+
+/* check mark animation */
+.checkmark__circle {
+	stroke-dasharray: 166;
+	stroke-dashoffset: 166;
+	stroke-width: 2;
+	stroke-miterlimit: 10;
+	stroke: #7ac142;
+	fill: none;
+	animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark {
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	display: block;
+	stroke-width: 2;
+	stroke: #fff;
+	stroke-miterlimit: 10;
+	margin: 20% auto;
+	box-shadow: inset 0px 0px 0px #7ac142;
+	animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+}
+
+.checkmark__check {
+	transform-origin: 50% 50%;
+	stroke-dasharray: 48;
+	stroke-dashoffset: 48;
+	animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke {
+	100% {
+		stroke-dashoffset: 0;
+	}
+}
+
+@keyframes scale {
+	0%, 100% {
+		transform: none;
+	}
+
+	50% {
+		transform: scale3d(1.1, 1.1, 1);
+	}
+}
+
+@keyframes fill {
+	100% {
+		box-shadow: inset 0px 0px 0px 30px #7ac142;
+	}
+}

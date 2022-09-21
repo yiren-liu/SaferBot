@@ -1,0 +1,252 @@
+.wrapper {
+  margin: 10px 50px;
+  width: 1100px;
+  position: relative;
+}
+
+#variable_container {
+  width: 200px;
+  max-height: 600px;
+  overflow: scroll;
+  position: absolute;
+  left: 0px;
+  top: 50px;
+}
+
+#graph_container {
+  position: absolute;
+  left: 0px;
+  width: 600px;
+  height: 600px;
+  outline: 3px solid black;
+
+}
+
+.chart_legend {
+  position: absolute;
+  left: 10px;
+  top: 30px;
+  font-style: italic;  
+}
+
+.rect-variable {
+  /*width: 100px;
+  height: 50px;*/
+  /*rx: 8px;
+  ry: 8px;*/
+  fill: #fac863;
+  stroke: #5d4c46;
+  stroke-width: 2px;
+}
+
+.rect-variable.selected {
+  fill: #f99157;
+  /*fill: #7ec7a5;*/
+}
+
+.rect-variable.highlight, .rect-variable.selected.highlight {
+  /*stroke: #f9cc9d;*/
+  stroke: #d11800;
+  stroke-width: 3px;
+}
+
+g.g-variable:hover {
+  cursor: pointer;
+}
+
+line.line-relation {
+  stroke: #5d4c46;
+  stroke-width: 3px;
+}
+
+line.line-relation.selected {
+  stroke: #f99157;
+  /*stroke: #7ec7a5;*/
+}
+
+line.line-relation.highlight, line.line-relation.selected.highlight {
+  /*stroke: #f9cc9d;*/
+  stroke: #d11800;
+  stroke-width: 3px;
+}
+
+line.line-relation:hover {
+  cursor: pointer;
+}
+
+.facet {
+  overflow: hidden;
+}
+
+.side_title {
+  text-align: center;
+  height: 50px;
+  background-color: #333333;
+  color: white;
+  line-height: 50px;
+  font-size: 15px;
+  border: 1px solid white;
+}
+
+.side_title:hover {
+  cursor: pointer;
+}
+
+.side_category {
+  text-align: center;
+  height: 30px;
+  background-color: #555555;
+  color: white;
+  line-height: 30px;
+  font-size: 15px;
+  border: 1px solid white;
+}
+
+.side_category:hover {
+  cursor: pointer;
+}
+
+#filter_container {
+  width: 250px;
+  height: 600px;
+  position: absolute;
+  left: 200px;
+  top: 0px;
+}
+
+#chart_container {
+  width: 700px;
+  height: 600px;
+  position: absolute;
+  left: 603px;
+  top: 0px;
+  outline: 3px solid black;
+}
+
+#chart_container_left {
+  width: 600px;
+  height: 520px;
+  position: absolute;
+  left: 200px;
+  top: 0px;
+}
+
+.bar-tooltip {
+  width: 150px;
+  padding: 2px 5px;
+}
+
+div.yMenu {
+  position: absolute;
+  width: 158px;
+  left: 50px;
+  top: 50px;
+}
+
+div.xMenu {
+  position: absolute;
+  width: 130px;
+  left: 350px;
+  top: 580px;
+}
+
+div.yMenu > button, div.xMenu > button {
+  width: 100%;
+}
+
+div.visual {
+  position: absolute;
+  width: 700px;
+  height: 600px;
+  /*width: 650px;
+  height: 550px;
+  left: 25px;
+  top: 25px;*/
+}
+
+div.visual circle {
+  opacity: 0.5;
+}
+
+.d3-tip {
+  width: 500px;
+  text-align: center;
+  line-height: 1.5;
+  padding: 12px;
+  background: black;
+  color: white;
+  border-radius: 4px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+#visualization {
+  width: 1000px;
+  margin-top: 70px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.button_g {
+  fill: #F0F0F0;
+  stroke-width: 1px;
+  stroke: gray;
+}
+
+.button_g:hover {
+  fill: #E0E0E0;
+  cursor: pointer;
+}
+
+.button_text {
+  fill: black;
+  stroke-width: 0px;
+}
+
+.button_rect_selected {
+  fill: #D46A6A;
+}
+
+.button_rect_history {
+  fill: #D0D0D0;
+}
+
+.criteria_button_selected {
+  fill: #73B55B;
+}
+
+.title {
+  fill: black;
+  font-size: 20px;
+}
+
+.filterbox {
+  width: 250px;
+  position: absolute;
+  top: 50px;
+  left: 5px;
+}
+
+.filter-control {
+  position: absolute;
+  left: 300px;
+  top: 50px;
+}

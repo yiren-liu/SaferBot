@@ -1,0 +1,244 @@
+{% extends 'base_nav.html' %}
+
+<!-- 'staticfiles' is not a registered tag library. Must be one of: admin_list admin_modify admin_urls cache i18n import_export_tags l10n log static tz -->
+{% load static %}
+
+{% block head %}
+
+<link rel="stylesheet" href="{% static 'css/draw_diagram.css' %}">
+
+<style type="text/css">
+	/* body {
+  background-image: url(../static/imgs/Background.png);
+  background-repeat: no-repeat;
+background-position: center center;
+background-attachment: fixed;
+background-size: cover;
+} */
+
+	/* #float{
+		position:fixed;
+		width:60px;
+		height:60px;
+		bottom:40px;
+		right:40px;
+		background-color:#0C9;
+		color:#FFF;
+		border-radius:50%;
+		text-align:center;
+		border: 2px solid #555555
+	}
+
+.my-float{
+		margin-top:22px;
+	}
+
+#chat {
+		display: block;
+	}
+
+.system-col, .essay-col{
+		resize: both;
+		overflow: auto;
+	} */
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="system-container p-4 mx-auto">
+	<!-- <h3 style="color:#C2EFEB">Peer Feedback</h3> -->
+	{% block top_content %}
+	{% endblock %}
+
+
+	<div class="d-flex CR-layout">
+
+		<div class="system-col essay-col" style="width: 700px;">
+			<!-- <div class="system-col essay-col" style="width: 700px;"> -->
+			<div class="self-CR h-100 d-flex flex-column">
+				<!-- <div>
+					<h5 class="title-header">Submit a ticket</h5>
+				</div> -->
+				<div class="panel-container panel-container-col" style="flex: 1 0 auto; background: rgb(255, 255, 255)">
+					
+					<!-- event_system_status -->
+					<div class="text-info-panel" style="height: 40px;">
+						<span class="font-weight-bold">
+							<i style="color:#1b1b1b; font-size: medium;">
+								Event extraction system status:
+							</i>
+							<i id="event_system_status" style="color:rgb(136, 136, 136); font-size: medium;">
+								Checking...
+							</i>
+						</span>
+						<span id="loading_icon" style="display: inline-flex;"></span>
+						<span id="event_system_toggle" style="display: inline-flex; float: right;"></span>
+					</div>
+
+					<hr>
+				</div>
+				<!-- <div class="button-list-next-session mb-2"></div> -->
+			</div>
+		</div>
+
+
+
+
+
+	</div>
+
+</div>
+
+<script>
+	/**
+	 *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+	 *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+	 */
+	/*
+	var disqus_config = function () {
+		this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+		this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+	};
+	*/
+	(function () {  // DON'T EDIT BELOW THIS LINE
+		var d = document, s = d.createElement('script');
+
+		s.src = 'https://co-roots.disqus.com/embed.js';
+
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+	})();
+</script>
+
+
+
+
+{% include "va_templates.html" %}
+
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+	var test = '{{ test | escapejs }}';
+
+	var configs = {
+		// variables from back-end
+		"user": '{{ request.user.username }}',
+		"condition": '{{ condition }}',
+		"context": '{{ context }}',
+		"session": "mentorbot",
+		"use_checkbox": false,
+
+		// "variable_order": {{ variable_order }},
+		"variable_order": [...Array(100).keys()],
+		// local setting
+		"graph_editable": true,                 // default to true
+		"data_visualization": false,            // enable/disable data visualization feature
+		"data_regression": true,                // enable/disable regression feature
+		"assisting": false,                     // enable/disable assisting features
+		"hypothesis_input": false,              // enable/disable hypothesis input feature (popup hypothesis panel)
+		"position_fixed": false,                // the eight variable placeholder on the graph
+		"variable_shape": 'circle' || 'rect',   // shape of the variable
+		"variable_hover_show_detail": true,     // enable/disable showing variable description on the top panel
+		"variable_click_select": false,         // enable/disable variable selection by clicking
+		"show_entered_hypotheses": true,        // show hypothesis on the middle right panel (allow editing)
+		"add_new_variable": true,               // enable/disable adding new variable
+		"visualize_stakeholder": false,         // enable/disable visualizing stakeholder
+		"relationship_inspiration": false,      // enable/disable "relationship inspiration" button
+		"hint_after_writing_hypothesis": false, // show a reminder to tell what users to do after writing a hypothesis
+		"save_and_load_graph": true,            // "save graph" and "load graph" buttons
+		"show_second_graph": false,             // show a separate graph into the interface
+		// GraphUI setting
+		"graph_ui_configs": {
+			"variable_circle_r": 29,
+		}
+	};
+
+	// if (configs.task === 'campaign') {
+	// 	$('#next').attr('href', '/postsurvey');
+	// }
+	// else if (configs.task === 'practice') {
+	// 	$('#next').attr('href', '/task');
+	// }
+</script>
+<!-- Try out Vega -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/vega@5.9.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@4.0.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6.2.1"></script> -->
+
+<script src="{% static 'js/lodash-4.17.20.min.js' %}"></script>
+
+
+<script src="{% static 'js/FilterHelper.js' %}"></script> <!-- not sure what is this... -->
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script src="{% static 'js/util.js' %}"></script>
+
+<!-- react js here -->
+<script type="text/babel" src="{% static 'js/system_control_react.js' %}"></script>
+
+
+<script type="text/javascript">
+	$(async function () {
+		response = saveLog("PAGELOAD", {}, '', 'mentorbot');
+		// entry();
+	});
+
+	var chatBot = document.getElementById("chat");
+
+	var floatBtn = document.getElementById("float");
+
+	var maximize = document.getElementById("maximize");
+
+	$('#float').click(function () {
+		if (chatBot.style.display != "none") {
+			chatBot.style.display = "none";
+			$("i", this).toggleClass("fa fa-plus my-float");
+		}
+		else {
+			chatBot.style.display = "block";
+		}
+		/*$('#maximize').show('1000'); */
+	});
+
+
+	// init event_system_status
+	axios.defaults.headers.common = {
+		'Content-Type': 'application/x-www-form-urlencoded'
+	}
+	var status_element = document.querySelector("#event_system_status");
+	if (status_element != null) {
+		function update_event_system_status() {
+			console.log("checking event system status...");
+
+			let form = new FormData();
+			form.append('command', 'check_event_system_status')
+			axios.post('/ajax/', form)
+				.then(function (response) {
+					let status = response['data']['system_status'];
+					status_element.innerHTML = status;
+					if (status == 'Offline') {
+						status_element.style.color = "#ff0000";
+					} else if (status == 'Online') {
+						status_element.style.color = "#32aa13";
+					}
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+		}
+		$(document).ready(function () {
+			setInterval(update_event_system_status, 5000);
+		});
+	}
+</script>
+
+
+
+{% block bottom_content %}
+{% endblock %}
+
+{% endblock %}

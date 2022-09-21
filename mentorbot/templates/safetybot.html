@@ -1,0 +1,744 @@
+{% extends 'base_nav.html' %}
+
+<!-- 'staticfiles' is not a registered tag library. Must be one of: admin_list admin_modify admin_urls cache i18n import_export_tags l10n log static tz -->
+{% load static %}
+
+{% block head %}
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+
+<link rel="stylesheet" href="{% static 'css/draw_diagram.css' %}">
+
+
+<style type="text/css">
+	body {
+		/* background-color: gainsboro; */
+		background-image: url(https://i0.wp.com/travelwithme247blog.com/wp-content/uploads/2019/11/mainquad-scaled.jpg);
+		background-repeat: no-repeat;
+		background-position: center bottom;
+		background-attachment: fixed;
+		background-size: cover;
+	}
+
+
+	/* body {
+  background-image: url(../static/imgs/Background.png);
+  background-repeat: no-repeat;
+background-position: center center;
+background-attachment: fixed;
+background-size: cover;
+} */
+
+	/* #float{
+		position:fixed;
+		width:60px;
+		height:60px;
+		bottom:40px;
+		right:40px;
+		background-color:#0C9;
+		color:#FFF;
+		border-radius:50%;
+		text-align:center;
+		border: 2px solid #555555
+	}
+
+.my-float{
+		margin-top:22px;
+	}
+
+#chat {
+		display: block;
+	}
+
+.system-col, .essay-col{
+		resize: both;
+		overflow: auto;
+	} */
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<!-- <a id="preview_btn" href="#popup_card" data-reveal-id="popupModal" style="visibility: hidden;">POP UP</a> -->
+<div id="popup_card" class="modal">
+	<div id="popupModal" class="modal-content">
+		<div class="modal-header">
+			<span id="tutorial-close-btn" class="close">
+				<i class="fa fa-times fa-sm" aria-hidden="true"></i>
+			</span>
+		</div>
+		<div class="modal-page">
+			<div class="modal-cell" style="justify-content: center;">
+				<h2>Welcome to the LiveSafe chatbot webpage!</h2>
+			</div>
+			<div class="modal-cell">
+				<div class="modal-cell" style="justify-content: center;">
+					<img src="{% static 'imgs/safetybot/chatbot_interface.gif' %}" width="150"
+						alt="interface of the chatbot" style="margin: 1rem;">
+					<img src="{% static 'imgs/safetybot/open_chatbot.gif' %}" width="150"
+						alt="gif of how to open the chatbot" style="margin: 1rem;">
+				</div>
+				<div class="modal-cell" style="flex-direction: column;">
+					<div class="modal-cell">
+						<div class="chat-icon">
+							<i class="fa fa-comments fa-2x" aria-hidden="true"></i>
+						</div>
+						<p>
+							<i class="fa fa-arrow-left"></i>
+							<font size="4">Click on this icon on the bottom right to
+								access the chatbot
+							</font>
+						</p>
+					</div>
+					<div class="modal-cell" style="align-items: flex-start;">
+						<ul>
+							<li>Press enter (or return) on your keyboard to send a message</li>
+							<li>Respond to the chatbot's questions to provide
+								information about your incident</li>
+							<li>The information you provide will fill out the
+								incident report!</li>
+						</ul>
+					</div>
+				</div>
+				<div class="modal-cell">
+					<i id="tutorial-next-btn" class="fa fa-chevron-circle-right fa-3x"></i>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal-page">
+			<div class="modal-cell" style="justify-content: center;">
+				<h2>Welcome to the LiveSafe chatbot webpage!</h2>
+			</div>
+			<div class="modal-cell">
+				<div class="modal-cell">
+					<i id="tutorial-back-btn" class="fa fa-chevron-circle-left fa-3x"></i>
+				</div>
+				<div class="modal-cell" style="justify-content: center;">
+					<img src="{% static 'imgs/safetybot/report_interface.gif' %}" width="250"
+						alt="interface of the report" style="margin: 1rem;">
+				</div>
+				<div class="modal-cell" style="align-items: center; flex-direction: column;">
+					<ul>
+						<li>You can also manually edit the report in the middle of the screen</li>
+						<li>Click on the tabs and scroll down to see the full report and submit it</li>
+						<li>If the chatbot misinterprets anything you
+							report, here is where you can fix it!</li>
+					</ul>
+					<button id="end-tutorial-btn" style="background-color: rgb(231, 100, 67);">
+						Let's get to reporting!
+					</button>
+				</div>
+				<!-- <div class="modal-cell">
+					<i id="tutorial-next-btn" class="fa fa-chevron-circle-right fa-3x"></i>
+				</div> -->
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="system-container p-4 mx-auto">
+	{% block top_content %}
+	{% endblock %}
+
+	<div class="d-flex CR-layout">
+		<div id="report-col" class="system-col essay-col" style="width: 700px; display: none;">
+			<div class="self-CR h-100 d-flex flex-column">
+				<div id="report-title">
+					<h5 class="title-header">Submit a ticket</h5>
+					<!-- <div class="button-list mb-2"></div> -->
+				</div>
+				<div class="panel-container panel-container-col" style="flex: 1 0 auto; background: rgb(255, 255, 255)">
+					<div class="text-info-panel" style="height: 40px;">
+						<i style="color:#1b1b1b; font-size: medium;">
+							<!-- The incident report extracted from the conversation will be displayed here: -->
+							The history of your conversation will be displayed here:
+						</i>
+					</div>
+					<hr>
+					<div class="essay-display-panel" style="height: 200px; white-space: pre-line; font-size: 18px; ">
+					</div>
+
+					<hr>
+
+					<div class="text-info-panel" style="height: 40px;">
+						<i style="color:#1b1b1b; font-size: medium;">
+							<!-- The incident report extracted from the conversation will be displayed here: -->
+							Please modify and submit the incident report here:
+						</i>
+					</div>
+
+					<hr>
+
+					<!-- event_system_status -->
+					<!-- <div class="text-info-panel" style="height: 40px;">
+						<span class="font-weight-bold">
+							<i style="color:#1b1b1b; font-size: medium;">
+								Event extraction system status:
+							</i>
+							<i id="event_system_status" style="color:rgb(136, 136, 136); font-size: medium;">
+								Checking...
+							</i>
+						</span>
+						<span id="loading_icon" style="display: inline-flex;"></span>
+						<span id="event_system_toggle" style="display: inline-flex; float: right;"></span>
+					</div> -->
+
+					<hr>
+
+					<div id="report-panel" class="essay-display-panel" style="height: 400px; font-size: 18px; ">
+						<div id="checkmark" style="display: none;">
+							<svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+								<circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+								<path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+							</svg>
+						</div>
+						<div id="content">
+							<!-- drop down panel for event type -->
+							<div class="dropdown">
+								<a>Offense Type: </a>
+								<!-- <button class="btn btn-secondary dropdown-toggle" type="button" id="event-dropdown-button"
+									data-toggle="dropdown" aria-expanded="false"
+									style="background-color: rgb(231, 100, 67); border-color: white;">
+									Offense Type
+								</button> -->
+								<!-- <div id="event-dropdown-items" class="dropdown-menu"
+									aria-labelledby="event-dropdown-button">
+									<a id="attack" class="dropdown-item">Physical Attack</a>
+									<a id="gunshot" class="dropdown-item">Gunshots</a>
+									<a id="assault" class="dropdown-item">Harassment/Assault</a>
+									<a id="abuse" class="dropdown-item">(Domestic) Abuse</a>
+									<a id="drug" class="dropdown-item">Alcohol/Drug Abuse</a>
+									<a id="carjacking" class="dropdown-item">Carjacking</a>
+									<a id="theft" class="dropdown-item">Theft</a>
+									<a id="noise" class="dropdown-item">Noise Complaint</a>
+								</div> -->
+								<!-- buttons for event types -->
+								<span id="event-button-list">
+									<button id="attack" class="event-button">Physical Attack</button>
+									<button id="gunshot" class="event-button">Gunshots</button>
+									<button id="assault" class="event-button">Harassment/Assault</button>
+									<button id="abuse" class="event-button">(Domestic) Abuse</button>
+									<button id="drug" class="event-button">Alcohol/Drug Abuse</button>
+									<button id="carjacking" class="event-button">Carjacking</button>
+									<button id="theft" class="event-button">Theft</button>
+									<button id="noise" class="event-button">Noise Complaint</button>
+								</span>
+								<button class="event-button-expand">...</button>
+							</div>
+							<hr>
+							<div id="fields-suspect">
+								<div style="margin-bottom:5px" class="card">
+									<div class="card-header clearfix" role="tab" id="heading1">
+										<div id="tooltip-report" style="visibility: hidden; float: left;"></div>
+										<h3 class="card-title pull-left"
+											style="margin-bottom: 0px; font-size: 16px; font-weight: bold;"> <span
+												style="cursor:pointer" class="collapsed" data-toggle="collapse"
+												data-target="#collapse-suspect" aria-expanded="false"
+												aria-controls="collapse-suspect">
+												Suspect Information <span id="shmut4"></span> <span
+													class="fa fa-angle-down"></span> </span> </h3>
+									</div>
+								</div>
+								<div id="collapse-suspect" class="panel-collapse collapse  in " role="tabpanel"
+									aria-labelledby="heading1">
+									<div class="panel-body">
+										<div class="row xrow-eq-height no-gutters">
+											<div class="input-group mb-2 mt-2">
+												<div class="input-group-prepend">
+													<span class="input-group-text" id="basic-addon1">Suspect: </span>
+												</div>
+												<input id="input-suspect" type="text" class="form-control" placeholder=""
+													aria-label="suspect" aria-describedby="basic-addon1">
+											</div>
+											<div class="input-group mb-2 mt-2">
+												<div class="input-group-prepend">
+													<span class="input-group-text" id="basic-addon1">Suspect-age: </span>
+												</div>
+												<input id="input-suspect-age" type="text" class="form-control"
+													placeholder="" aria-label="suspect-age" aria-describedby="basic-addon1">
+											</div>
+											<div class="input-group mb-2 mt-2">
+												<div class="input-group-prepend">
+													<span class="input-group-text" id="basic-addon1">Suspect-race: </span>
+												</div>
+												<input id="input-suspect-race" type="text" class="form-control"
+													placeholder="" aria-label="suspect-race"
+													aria-describedby="basic-addon1">
+											</div>
+											<div class="input-group mb-2 mt-2">
+												<div class="input-group-prepend">
+													<span class="input-group-text" id="basic-addon1">Suspect-clothing:
+													</span>
+												</div>
+												<input id="input-suspect-clothing" type="text" class="form-control"
+													placeholder="" aria-label="suspect-clothing"
+													aria-describedby="basic-addon1">
+											</div>
+											<div class="input-group mb-2 mt-2">
+												<div class="input-group-prepend">
+													<span class="input-group-text" id="basic-addon1">Suspect-sex: </span>
+												</div>
+												<input id="input-suspect-sex" type="text" class="form-control"
+													placeholder="" aria-label="suspect-sex" aria-describedby="basic-addon1">
+											</div>
+											<div class="input-group mb-2 mt-2">
+												<div class="input-group-prepend">
+													<span class="input-group-text" id="basic-addon1">Suspect-movement:
+													</span>
+												</div>
+												<input id="input-suspect-movement" type="text" class="form-control"
+													placeholder="" aria-label="suspect-movement"
+													aria-describedby="basic-addon1">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div id="fields-victim" style="display: none;">
+								<div style="margin-bottom:5px" class="card">
+									<div class="card-header clearfix" role="tab" id="heading1">
+										<div id="tooltip-report" style="visibility: hidden; float: left;"></div>
+										<h3 class="card-title pull-left"
+											style="margin-bottom: 0px; font-size: 16px; font-weight: bold;"> <span
+												style="cursor:pointer" class="collapsed" data-toggle="collapse"
+												data-target="#collapse-victim" aria-expanded="false"
+												aria-controls="collapse-victim">
+												Victim Information <span id="shmut4"></span> <span
+													class="fa fa-angle-down"></span> </span> </h3>
+									</div>
+								</div>
+								<div id="collapse-victim" class="panel-collapse collapse  in " role="tabpanel"
+									aria-labelledby="heading1">
+									<div class="panel-body">
+										<div class="row xrow-eq-height no-gutters">
+											<div class="input-group mb-2 mt-2">
+												<div class="input-group-prepend">
+													<span class="input-group-text" id="basic-addon1">Victim-name: </span>
+												</div>
+												<input id="input-victim-name" type="text" class="form-control"
+													placeholder="" aria-label="victim-name" aria-describedby="basic-addon1">
+											</div>
+											<div class="input-group mb-2 mt-2">
+												<div class="input-group-prepend">
+													<span class="input-group-text" id="basic-addon1">Victim-phone: </span>
+												</div>
+												<input id="input-victim-phone" type="text" class="form-control"
+													placeholder="" aria-label="victim-phone"
+													aria-describedby="basic-addon1">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div id="fields-vehicle" style="display: none;">
+								<div style="margin-bottom:5px" class="card">
+									<div class="card-header clearfix" role="tab" id="heading1">
+										<h3 class="card-title pull-left"
+											style="margin-bottom: 0px; font-size: 16px; font-weight: bold;"> <span
+												style="cursor:pointer" class="collapsed" data-toggle="collapse"
+												data-target="#collapse-vehicle" aria-expanded="false"
+												aria-controls="collapse-vehicle">
+												Vehicle Information <span id="shmut4"></span> <span
+													class="fa fa-angle-down"></span> </span> </h3>
+									</div>
+								</div>
+								<div id="collapse-vehicle" class="panel-collapse collapse  in " role="tabpanel"
+									aria-labelledby="heading1">
+									<div class="panel-body">
+										<div class="row xrow-eq-height no-gutters">
+											<div class="input-group mb-2 mt-2">
+												<div class="input-group-prepend">
+													<span class="input-group-text">License Plate: </span>
+												</div>
+												<input id="input-vehicle-plate" type="text" class="form-control"
+													placeholder="" aria-label="vehicle-plate">
+											</div>
+											<div class="input-group mb-2 mt-2">
+												<div class="input-group-prepend">
+													<span class="input-group-text">Color: </span>
+												</div>
+												<input id="input-vehicle-color" type="text" class="form-control"
+													placeholder="" aria-label="vehicle-color">
+											</div>
+											<div class="input-group mb-2 mt-2">
+												<div class="input-group-prepend">
+													<span class="input-group-text">Make: </span>
+												</div>
+												<input id="input-vehicle-make" type="text" class="form-control"
+													placeholder="" aria-label="vehicle-make">
+											</div>
+											<div class="input-group mb-2 mt-2">
+												<div class="input-group-prepend">
+													<span class="input-group-text">Model: </span>
+												</div>
+												<input id="input-vehicle-model" type="text" class="form-control"
+													placeholder="" aria-label="vehicle-model">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div id="fields-general">
+								<div style="margin-bottom:5px" class="card">
+									<div class="card-header clearfix" role="tab" id="heading1">
+										<h3 class="card-title pull-left"
+											style="margin-bottom: 0px; font-size: 16px; font-weight: bold;"> <span
+												style="cursor:pointer" class="collapsed" data-toggle="collapse"
+												data-target="#collapse-general" aria-expanded="false"
+												aria-controls="collapse-general">
+												General Information <span id="shmut4"></span> <span
+													class="fa fa-angle-down"></span><input id="fldtit2" type="hidden"
+													value="General Information"> </span> </h3>
+									</div>
+								</div>
+								<div id="collapse-general" class="panel-collapse collapse  in" role="tabpanel"
+									aria-labelledby="heading2">
+									<div class="panel-body">
+										<div class="row xrow-eq-height no-gutters">
+											<div class="input-group mb-2 mt-2">
+												<div class="input-group-prepend">
+													<span class="input-group-text" id="basic-addon1">Weapon: </span>
+												</div>
+												<input id="input-instrument" type="text" class="form-control" placeholder=""
+													aria-label="instrument" aria-describedby="basic-addon1">
+											</div>
+											<div class="input-group mb-2 mt-2">
+												<div class="input-group-prepend">
+													<span class="input-group-text" id="basic-addon1">Location: </span>
+												</div>
+												<input id="input-location" type="text" class="form-control" placeholder=""
+													aria-label="location" aria-describedby="basic-addon1">
+												<div id="report-locate" class="input-group-append location-button">
+													<span class="input-group-text">
+														<i class="fa fa-location" aria-hidden="true"></i>
+													</span>
+												</div>
+											</div>
+											<div id="mapholder"></div>
+											<div class="input-group mb-2 mt-2">
+												<div class="input-group-prepend">
+													<span class="input-group-text" id="basic-addon1">Time: </span>
+												</div>
+												<input id="input-time" type="text" class="form-control" placeholder=""
+													aria-label="time" aria-describedby="basic-addon1">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div id="fields-item" style="display: none;">
+								<div style="margin-bottom:5px" class="card">
+									<div class="card-header clearfix" role="tab" id="heading1">
+										<h3 class="card-title pull-left"
+											style="margin-bottom: 0px; font-size: 16px; font-weight: bold;"> <span
+												style="cursor:pointer" class="collapsed" data-toggle="collapse"
+												data-target="#collapse-item" aria-expanded="false"
+												aria-controls="collapse-item">
+												Item Information <span id="shmut4"></span> <span
+													class="fa fa-angle-down"></span> </span> </h3>
+									</div>
+								</div>
+								<div id="collapse-item" class="panel-collapse collapse  in " role="tabpanel"
+									aria-labelledby="heading1">
+									<div class="panel-body">
+										<div class="row xrow-eq-height no-gutters">
+											<div class="input-group mb-2 mt-2">
+												<div class="input-group-prepend">
+													<span class="input-group-text">Item stolen: </span>
+												</div>
+												<input id="input-item-stolen" type="text" class="form-control"
+													placeholder="" aria-label="item-stolen">
+											</div>
+											<div class="input-group mb-2 mt-2">
+												<div class="input-group-prepend">
+													<span class="input-group-text">Estimated price: </span>
+												</div>
+												<input id="input-item-price" type="text" class="form-control" placeholder=""
+													aria-label="item-price">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<hr>
+							<!-- Other notes here -->
+							<div class="col-xs-12">Additional Notes:</div>
+							<textarea id="notes" type="text" class="form-control" placeholder="" aria-label="notes"
+								aria-describedby="basic-addon1" rows="6" style="background-color: papayawhip;"></textarea>
+							<hr>
+							<div style="display: flex; justify-content: flex-end;">
+								<p>
+									<!-- <button id="submit_text" class="btn_fancy">Submit</button> -->
+								<div id="submit_text_styled">Submit</div>
+								</p>
+							</div>
+						</div>
+					</div>
+
+
+
+					<hr>
+					<!-- <div class="text-info-panel" style="height: 40px">
+						<span class="font-weight-bold"><i style="color:#1b1b1b"></i></span>
+					</div> -->
+					<!-- <hr>
+					<div class="editor-panel" style="height: 370px">
+						<textarea id="editor" name="editor">
+
+						</textarea>
+
+						<br>
+						<p>
+                            <button id="submit_text" class="btn_fancy">Submit</button>
+							<i>Last Saved Time: <span id="last_saved_time"></span></i>
+						</p>
+					</div> -->
+				</div>
+				<!-- <div class="button-list-next-session mb-2"></div> -->
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+<section id="homepage-tips-1" class="safety-tips">
+
+	<!-- <img src="https://police.illinois.edu/wp-content/uploads/2020/11/homepage-safety-image.jpg" alt=""
+		class="home-safety-img"> -->
+	<img src="https://ca-qc-1.zippyimage.com/2021/05/11/b84d869e503da08daec3a631764d660a.png" alt=""
+		class="home-safety-img" style="opacity: 0.5;">
+
+	<!-- <footer z> </footer> -->
+
+	<h2 class="safety-heading">SAFEWALKS & SAFERIDES</h2>
+
+	<p><a href="https://police.illinois.edu/services/safewalks-saferides/" class="button">Request walks&rides</a></p>
+
+
+</section>
+
+
+<section id="homepage-tips-2" class="safety-tips">
+
+	<!-- <img src="https://police.illinois.edu/wp-content/uploads/2020/11/homepage-safety-image.jpg" alt=""
+		class="home-safety-img"> -->
+	<img src="https://ca-qc-1.zippyimage.com/2021/05/11/b84d869e503da08daec3a631764d660a.png" alt=""
+		class="home-safety-img">
+
+	<!-- <footer z> </footer> -->
+
+	<h2 class="safety-heading">How do you stay safe on campus?</h2>
+
+	<p><a href="https://police.illinois.edu/services/campus-safety-tips/" class="button">See safety tips</a></p>
+
+
+</section>
+
+
+
+
+<!-- 	<div id="vega_vis" style="height: 600px; width: 700px;"></div>
+ -->
+<!-- Consider moving this to template and append it programmtically.
+However, this is a pretty general component so it's ok to just put it here -->
+<div class="modal fade" id="general_modal" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title"></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<!-- Don't use .d-none; otherwise, $.show() would not work. .d-none us !important -->
+				<button id="secondary_button" type="button" class="btn btn-sm btn-secondary" data-dismiss="modal"
+					style="display: none"></button>
+				<button id="close_button" type="button" class="btn btn-sm btn-primary" data-dismiss="modal"></button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- <button id="float">
+	<i class="fas fa-times my-float" id = "maximize"></i>
+</button> -->
+
+
+<!-- <div id="disqus_thread" style="display: none;"></div>
+<script>
+	/**
+	 *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+	 *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+	 */
+	/*
+	var disqus_config = function () {
+		this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+		this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+	};
+	*/
+	(function () {  // DON'T EDIT BELOW THIS LINE
+		var d = document, s = d.createElement('script');
+
+		s.src = 'https://co-roots.disqus.com/embed.js';
+
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+	})();
+</script> -->
+
+<!-- <p>
+	<button class="btn btn-default" type="button" data-toggle="collapse" data-target="#detailPanel" aria-expanded="false" aria-controls="collapseExample">
+		Details
+	</button>
+</p>
+<div class="collapse" id="detailPanel">
+	<div class="card card-block" id="detail">
+	</div>
+</div> -->
+
+
+
+<!-- <div id="variable_container"></div>-->
+<!-- <div id="googlechart"></div> -->
+<div id="main_alert_container">
+	<div class="alert alert-dismissible" role="alert" style="display: none">
+		<span class="alert-text"></span>
+		<!-- do not use data-dismiss="alert"; it will removes the alert from DOM -->
+		<button type="button" class="close" aria-label="Close" onclick="$(this).closest('.alert').fadeOut();">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
+</div>
+
+
+<div class="floating-chat" style="font-family: Verdana; z-index: 99;">
+	<i class="fa fa-comments fa-2x" aria-hidden="true"></i>
+	<div class="chat" style="margin: -2px;">
+		<div class="header" style="background-color: rgb(231, 100, 67); height: 50px; align-items: center; padding-bottom: 0px;
+		border-radius: 10px 10px 0px 0px; box-shadow: 0px 2px 5px rgb(146, 146, 146); z-index: 1;">
+			<span class="title">
+				Safety Report Assistance
+			</span>
+			<button>
+				<i class="fa fa-times fa-lg" aria-hidden="true"></i>
+			</button>
+
+		</div>
+		<div id="chat" style="height: 580px; background: rgb(219, 219, 219);
+		opacity: 1; border-radius: 0px 0px 10px 10px; width: 100%;">
+			<div id="tooltip-chatbot" style="margin-left: 0px;"></div>
+		</div>
+
+	</div>
+</div>
+
+
+
+{% include "va_templates.html" %}
+
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+	var test = '{{ test | escapejs }}';
+
+	var configs = {
+		// variables from back-end
+		"user": '{{ request.user.username }}',
+		"condition": '{{ condition }}',
+		"context": '{{ context }}',
+		"session": "safetybot",
+
+		// local setting
+		"show_hamburger": false,
+	};
+
+	// if (configs.task === 'campaign') {
+	// 	$('#next').attr('href', '/postsurvey');
+	// }
+	// else if (configs.task === 'practice') {
+	// 	$('#next').attr('href', '/task');
+	// }
+</script>
+<!-- Try out Vega -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/vega@5.9.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@4.0.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6.2.1"></script> -->
+
+<script src="{% static 'js/lodash-4.17.20.min.js' %}"></script>
+
+
+<script src="{% static 'js/FilterHelper.js' %}"></script> <!-- not sure what is this... -->
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script src="{% static 'js/util.js' %}"></script>
+<!-- <script src="{% static 'js/datalib.js' %}"></script>
+<script src="{% static 'js/modules/DataVariable.js' %}"></script>
+<script src="{% static 'js/modules/CausalDiagram.js' %}"></script>
+<script src="{% static 'js/modules/VisualSetting.js' %}"></script>
+<script src="{% static 'js/modules/GraphUI.js' %}"></script>
+<script src="{% static 'js/modules/CausalInspirationFeature.js' %}"></script>
+<script src="{% static 'js/modules/RegressionFeature.js' %}"></script>
+<script src="{% static 'js/modules/NarrativePanel.js' %}"></script>
+<script src="{% static 'js/modules/VizFeature.js' %}"></script>
+<script src="{% static 'js/modules/VICA.js' %}"></script>
+<script src="{% static 'js/modules/CrowdHint.js' %}"></script>
+<script src="{% static 'js/modules/CR.js' %}"></script>
+<script src="{% static 'js/configuration.js' %}"></script>
+<script src="{% static 'js/diagram_user.js' %}"></script> -->
+
+<!-- <script src="{% static 'js/mentorbot.js' %}"></script> -->
+<script src="{% static 'js/safetybot.js' %}"></script>
+<script src="{% static 'js/essay_data.js' %}"></script>
+
+
+<!-- chatbot code here -->
+<script src="{% static 'component/Bubbles.js' %}"></script>
+<script src="{% static 'js/chatbot-interface-safetybot.js' %}"></script>
+
+<!-- popup toolstips code here -->
+<script src="{% static 'js/mui/material-ui.development.js' %}" crossorigin></script>
+<script type="text/babel" src="{% static 'js/tooltips_safetybot_react.js' %}"></script>
+
+<!-- google map api here -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyALNblaN-tgwvFvwkSJb0kiSe9J2El1HH0"></script>
+
+
+<script type="text/javascript">
+	$(async function () {
+		response = saveLog("PAGELOAD", {}, '', configs.session);
+		entry();
+	});
+
+	var chatBot = document.getElementById("chat");
+
+	var floatBtn = document.getElementById("float");
+
+	var maximize = document.getElementById("maximize");
+
+	$('#float').click(function () {
+		if (chatBot.style.display != "none") {
+			chatBot.style.display = "none";
+			$("i", this).toggleClass("fa fa-plus my-float");
+		}
+		else {
+			chatBot.style.display = "block";
+		}
+		/*$('#maximize').show('1000'); */
+	});
+</script>
+
+
+
+{% block bottom_content %}
+{% endblock %}
+
+{% endblock %}

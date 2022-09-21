@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+	<p id="info"></p>
+	<div id="graph"></div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script type="text/javascript">
+
+var variables = ['none', 'Month', 'Success', 'Duration', 'Essay Length', 'Goal', 'Media Shares', 'Country', 'Category'];
+var csvFile = '../static/data/all_data_0320_visualize_logs_annotated.csv';
+var raw_data;
+d3.csv(csvFile, function(error, data) {
+	if(error) { console.log(error); return; }
+
+	preprocess(data);
+	raw_data = data;
+
+	visualize("participant01");
+	// $('#info').html(variables.map( (name, i) => '<b>' + i + '</b>:"' + name + '" ' ));
+	
+});
+
+var start, end;
+function animate(user_id) {
+	clear();
+	var data = raw_data.filter(log => log['user_id'] === user_id);
+	var length = data.length;
+	start = 0;
+	end = start + 10;
+
+	visualize(user_id, start, end);
+}
+
+function clear() {
+	Plotly.newPlot('graph', [
+		{
+			name: 'A-X',
+			type: 'scatter3d',
+			mode: 'lines',
+			x: [2, 8],
+			y: [1, 1],
+			z: [0, 0],
+			line: {
+				width: 3,
+				color: 'green'
+			}
+		},
+		{
+			name: 'X-B',
+			type: 'scatter3d',
+			mode: 'lines',
+			x: [3, 8],
+			y: [2, 2],
+			z: [0, 0],
+			line: {
+				width: 3,
+				color: 'orange'
+			}
+		},
+		{
+			name: 'A-X-B',
+			type: 'scatter3d',
+			mode: 'lines',
+			x: [3, 8],
+			y: [2, 2],
+			z: [1, 1],
+			line: {
+				width: 3,
+				color: 'purple'
+			}
+		}
+	], layout);
+}
+
+function preprocess(data) {
+	data.forEach(function(log) {
+		log['duration'] = +log['duration'];
+		log['number of vars'] = +log['number of vars'];
+		log['vars'] = JSON.parse(log['vars']);
+
+		coordinates = log['vars'].map(v => variables.indexOf(v)).sort();
+		while(coordinates.length < 3){ coordinates = [0, ...coordinates]; }
+		log['coordinates'] = coordinates.reverse();
+	})
+}
+
+var layout = {
+	autosize: false,
+	width: 900,
+	height: 700,
+	margin: {
+		l: 50,
+		r: 50,
+		b: 0,
+		t: 0,
+		pad: 4
+	},
+	scene: {
+		xaxis: {
+			tickvals: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+			ticktext: variables,
+			range: [0, 8]
+		},
+		yaxis: {
+			tickvals: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+			ticktext: variables,
+			range: [0, 8]
+		},
+		zaxis: {
+			tickvals: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+			ticktext: variables,
+			range: [0, 8]
+		},
+		camera: {
+			up: {x: 0, y: 0, z: 1},
+			center: {x: 0, y: 0, z: -0.5},
+			eye: {x: 1.8351920841508331, y: -1.908508933158252, z: 1.271106422072417}
+		},
+		aspectratio: {x: 2, y: 2, z: 2}
+	}
+	
+};
+
+function visualize(user_id, start, end) {
+	data = raw_data.filter(log => log['user_id'] === user_id);
+	if (start === undefined) {clear(); start = 0; end = data.length};
+	data = data.slice(start, end);
+	data.forEach(function(log) {
+		console.log(log.vars);
+	})
+
+	
+
+	Plotly.plot('graph', [{
+		type: 'scatter3d',
+		mode: 'lines+markers',
+		x: data.map(log => log['coordinates'][0]),
+		y: data.map(log => log['coordinates'][1]),
+		z: data.map(log => log['coordinates'][2]),
+		line: {
+			width: 6,
+			color: data.map((log,i) => i),
+			cmin: 0,
+			cmax: length,
+			// colorscale: "Reds"},
+		},
+		marker: {
+			size: data.map(log => Math.sqrt(log['duration'])),
+			// color: data.map((log,i) => i),
+			// colorscale: "Reds",
+			// cmin: 0,
+			// cmax: length,
+			// showscale: true
+		}},                  
+	], layout);
+}
+
+// var pointCount = 310;
+// var i, r;
+
+// var x = [];
+// var y = [];
+// var z = [];
+// var c = [];
+
+// for(i = 0; i < pointCount; i++) 
+// {
+// 	r = 10 * Math.cos(i / 100);
+// 	x.push(r * Math.cos(i / 10));
+// 	y.push(r * Math.sin(i / 10));
+// 	z.push(i / 10);
+// 	c.push(i)
+// }
+
+// var layout = {
+//   autosize: false,
+//   width: 700,
+//   height: 700,
+//   margin: {
+//     l: 50,
+//     r: 50,
+//     b: 0,
+//     t: 0,
+//     pad: 4
+//   }
+// }
+
+// Plotly.plot('graph', [{
+// 	type: 'scatter3d',
+// 	mode: 'lines+markers',
+// 	x: x,
+// 	y: y,
+// 	z: z,
+// 	line: {
+// 		width: 6,
+// 		color: c,
+// 		colorscale: "Viridis"},
+// 	marker: {
+// 		size: z,
+// 		color: c,
+// 		colorscale: "Viridis",
+// 		cmin: -20,
+// 		cmax: 50
+// 	}},                  
+// 	], layout);
+</script>
+
+{% endblock %}

@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+
+<!-- 'staticfiles' is not a registered tag library. Must be one of: admin_list admin_modify admin_urls cache i18n import_export_tags l10n log static tz -->
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/draw_diagram.css' %}">
+<link rel="stylesheet" href="{% static 'side-comments-master/release/side-comments.css' %}"/>
+<link rel="stylesheet" href="{% static 'side-comments-master/release/themes/default-theme.css' %}"/>
+<script src="{% static 'side-comments-master/release/side-comments.js' %}"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/29.1.0/classic/ckeditor.js"></script>
+<style type="text/css">
+body {
+  background-image: url(../static/imgs/Background.png);
+  background-repeat: no-repeat;
+background-position: center center;
+background-attachment: fixed;
+background-size: cover;
+}
+.button {
+  background-color: #FDAC6C; /* Green */
+  border: none;
+  font-weight: bold;
+  color: black;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline;
+  font-size: 25px;
+  margin: 4px 24px;
+  cursor: pointer;
+  height: 120px;
+  width: 120px;
+  border-radius: 50%;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="centered">
+	
+
+    <span>
+        <p style="text-align: center; color: #FDAC6C"><strong>Welcome to Co-roots, a peer mentoring system.</strong></p>
+        <p style="text-align: center; color: #FDAC6C"><strong>You will be guided through a reflection writing training session.</strong></p>
+        <p style="text-align: center; color: #FDAC6C"><strong>Press the write button when you are ready to write an essay.</strong></p>
+        <p style="text-align: center; color: #FDAC6C"><strong>Press the comment button when you are ready to conduct peer mentoring.</strong></p>
+		<p style="text-align: center;"><button id="write" class="button">Enter</button></p>
+        <!-- <button id="go" class="button">COMMENT</button></p> -->
+		
+    </span>
+
+	<!-- <span>
+									
+		<div id="commentable-area" style="text-align: center; color: #FDAC6C">
+			<p data-section-id="1" class="commentable-section">
+			This is a section that can be commented on.
+			</p>
+			<p data-section-id="2" class="commentable-section">
+			This is a another section that can be commented on.
+			</p>
+			<p data-section-id="3" class="commentable-section">
+			This is yet another section that can be commented on.
+			</p>
+		</div>
+	</span> -->
+</div>
+
+
+
+<!-- 	<div id="vega_vis" style="height: 600px; width: 700px;"></div>
+ -->
+<!-- Consider moving this to template and append it programmtically.
+However, this is a pretty general component so it's ok to just put it here -->
+<div class="modal fade" id="general_modal" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title"></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<!-- Don't use .d-none; otherwise, $.show() would not work. .d-none us !important -->
+				<button id="secondary_button" type="button" class="btn btn-sm btn-secondary" data-dismiss="modal" style="display: none"></button>
+				<button id="close_button" type="button" class="btn btn-sm btn-primary" data-dismiss="modal"></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+<!-- <p>
+	<button class="btn btn-default" type="button" data-toggle="collapse" data-target="#detailPanel" aria-expanded="false" aria-controls="collapseExample">
+		Details
+	</button>
+</p>
+<div class="collapse" id="detailPanel">
+	<div class="card card-block" id="detail">
+	</div>
+</div> -->
+
+
+
+<!-- <div id="variable_container"></div>-->
+<!-- <div id="googlechart"></div> -->
+<div id="main_alert_container">
+	<div class="alert alert-dismissible" role="alert" style="display: none">
+		<span class="alert-text"></span>
+		<!-- do not use data-dismiss="alert"; it will removes the alert from DOM -->
+		<button type="button" class="close" aria-label="Close" onclick="$(this).closest('.alert').fadeOut();">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
+</div>
+
+
+
+{% include "va_templates.html" %}
+
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+	var test = '{{ test | escapejs }}';
+
+	var configs = {
+		// variables from back-end
+		"user": '{{ request.user.username }}',
+		"condition": '{{ condition }}',
+		"context": '{{ context }}',
+        "session": "mentorbot",
+
+		// "variable_order": {{ variable_order }},
+		"variable_order": [...Array(100).keys()],
+		// local setting
+		"graph_editable": true,                 // default to true
+		"data_visualization": false,            // enable/disable data visualization feature
+		"data_regression": true,                // enable/disable regression feature
+		"assisting": false,                     // enable/disable assisting features
+		"hypothesis_input": false,              // enable/disable hypothesis input feature (popup hypothesis panel)
+		"position_fixed": false,                // the eight variable placeholder on the graph
+		"variable_shape": 'circle' || 'rect',   // shape of the variable
+		"variable_hover_show_detail": true,     // enable/disable showing variable description on the top panel
+		"variable_click_select": false,         // enable/disable variable selection by clicking
+		"show_entered_hypotheses": true,        // show hypothesis on the middle right panel (allow editing)
+		"add_new_variable": true,               // enable/disable adding new variable
+		"visualize_stakeholder": false,         // enable/disable visualizing stakeholder
+		"relationship_inspiration": false,      // enable/disable "relationship inspiration" button
+		"hint_after_writing_hypothesis": false, // show a reminder to tell what users to do after writing a hypothesis
+		"save_and_load_graph": true,            // "save graph" and "load graph" buttons
+		"show_second_graph": false,             // show a separate graph into the interface
+		// GraphUI setting
+		"graph_ui_configs": {
+			"variable_circle_r": 29,
+		}
+	};
+
+	// if (configs.task === 'campaign') {
+	// 	$('#next').attr('href', '/postsurvey');
+	// }
+	// else if (configs.task === 'practice') {
+	// 	$('#next').attr('href', '/task');
+	// }
+</script>
+<!-- Try out Vega -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/vega@5.9.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@4.0.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6.2.1"></script> -->
+
+<script src="{% static 'js/lodash-4.17.20.min.js' %}"></script>
+
+
+<script src="{% static 'js/FilterHelper.js' %}"></script> <!-- not sure what is this... -->
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script src="{% static 'js/util.js' %}"></script>
+<!-- <script src="{% static 'js/datalib.js' %}"></script>
+<script src="{% static 'js/modules/DataVariable.js' %}"></script>
+<script src="{% static 'js/modules/CausalDiagram.js' %}"></script>
+<script src="{% static 'js/modules/VisualSetting.js' %}"></script>
+<script src="{% static 'js/modules/GraphUI.js' %}"></script>
+<script src="{% static 'js/modules/CausalInspirationFeature.js' %}"></script>
+<script src="{% static 'js/modules/RegressionFeature.js' %}"></script>
+<script src="{% static 'js/modules/NarrativePanel.js' %}"></script>
+<script src="{% static 'js/modules/VizFeature.js' %}"></script>
+<script src="{% static 'js/modules/VICA.js' %}"></script>
+<script src="{% static 'js/modules/CrowdHint.js' %}"></script>
+<script src="{% static 'js/modules/CR.js' %}"></script>
+<script src="{% static 'js/configuration.js' %}"></script>
+<script src="{% static 'js/diagram_user.js' %}"></script> -->
+
+<!-- <script src="{% static 'js/mentorbot.js' %}"></script> -->
+<!-- <script src="{% static 'js/essay_data.js' %}"></script> -->
+
+
+<!-- chatbot code here -->
+<!-- <script src="{% static 'component/Bubbles.js' %}"></script> -->
+<!-- <script src="{% static 'js/chatbot-interface.js' %}"></script> -->
+
+<script type="text/javascript">
+	$(async function() {
+		response = saveLog("PAGELOAD", {}, '', 'welcome');
+		// entry();
+		//editor_setup_text(response['content'])
+		let $write_btn = $('#write');
+        $write_btn.click( function () {
+            // log editor content
+            // redirect to next session
+            window.location = '/user_study_mentorbot_day_2';
+        });
+		let $go_btn = $('#go');
+        $go_btn.click( function () {
+            // log editor content
+            // redirect to next session
+            window.location = '/mentorbot';
+        });
+	})
+</script>
+
+<script>
+	// First require it.
+var SideComments = require('side-comments');
+
+var currentUser = {
+id: 1,
+avatarUrl: "https://cdn.pixabay.com/photo/2020/04/13/20/42/potato-5039995_960_720.png",
+name: "You"
+}
+
+var existingComments = [
+{
+"sectionId": "1",
+"comments": [
+  {
+	"authorAvatarUrl": "https://images4-f.ravelrycache.com/uploads/Mindundia/359559330/jonsnow_small2.png",
+	"authorName": "Jon Snow",
+	"comment": "I'm Ned Stark's anon son. Related: I know nothing."
+  },
+  {
+	"authorAvatarUrl": "https://www.nicepng.com/png/detail/123-1237253_sad-don-draper.png",
+	"authorName": "Donald Draper",
+	"comment": "I need a scotch."
+  }
+]
+},
+{
+"sectionId": "3",
+"comments": [
+  {
+	"authorAvatarUrl": "https://pbs.twimg.com/profile_images/883047943011311616/K3wtedGA_400x400.jpg",
+	"authorName": "Senator Clay Davis",
+	"comment": "These Side Comments are incredible. Sssshhhiiiiieeeee."
+  }
+]
+}
+];
+
+// Then, create a new SideComments instance, passing in the wrapper element and the optional the current user and any existing comments.
+sideComments = new SideComments('#commentable-area', currentUser, existingComments);
+
+
+</script>
+
+
+{% block bottom_content %}
+{% endblock %}
+
+{% endblock %}

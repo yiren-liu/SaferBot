@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block head %}
+<style type="text/css">
+	.button {
+		background-color: #75ecad;
+		/* Green */
+		border: none;
+		font-weight: bold;
+		color: #5b6369;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 15px;
+		margin: 4px 2px;
+		cursor: pointer;
+		height: calc(1.5em + 0.75rem + 15px);
+		width: 28%;
+		border-radius: 30px;
+	}
+
+	.form-control {
+		width: 80%;
+		display: inline-block;
+		height: calc(1.5em + 0.75rem + 10px);
+	}
+</style>
+
+<!-- background image -->
+<style>
+	body {
+		background-image: url(../static/imgs/Background.png);
+		background-repeat: no-repeat;
+		background-position: center center;
+		background-attachment: fixed;
+		background-size: cover;
+	}
+</style>
+
+
+{% endblock %}
+
+{% block content %}
+<div class="container centered">
+	<!-- <div class="jumbotron text-center mx-auto mt-3" style="width: 500px;">
+		<h2>Mentorbot</h2>
+		<p>This is a prototype of an interactive causal reasoning system.</p>
+	</div> -->
+	<p style="color: white;">
+		{% if error_message %}
+		{{ error_message }}
+		{% endif %}
+	</p>
+	<div class="card mt-5 mx-auto" id="login" style="border-radius: 50px;">
+		<div class="card-title text-center">
+			<img src="{% static 'imgs/logos-02.svg' %}" alt="CO-ROOTS" style="width:300px;height:300px;" />
+		</div>
+
+		<div class="card-body">
+			<form class="form-horizontal" action="" method="post">
+				{% csrf_token %}
+				<input type="hidden" name="next" value="{{ next }}">
+				<div class="form-group text-center">
+					<!-- <label style="text-align: center;" for="input_username" class="control-label">Username</label> -->
+					<input style="border-radius: 15px; background-color: #e2e2e1;" type="text" class="form-control"
+						id="input_username" placeholder="Username" name="username" required>
+
+					<br>
+					<br>
+
+
+					<!-- <label for="input_password" class="control-label">Password</label> -->
+					<input style="border-radius: 15px; background-color: #e2e2e1;" type="password" class="form-control"
+						id="input_password" placeholder="Password" name="password" required>
+
+					<br>
+					<br>
+
+					<button type="submit " class="button" style="margin:5px;">Login</button>
+					<br>
+					<br>
+					<p style="font-size: 20px; color: #03d3c0; cursor: pointer;"
+						onclick="window.location.href='/signup/'">New user? Sign up here</p>
+				</div>
+			</form>
+
+		</div>
+	</div>
+
+
+</div>
+{% endblock %}

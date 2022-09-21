@@ -1,0 +1,309 @@
+{% extends 'base_nav.html' %}
+
+<!-- 'staticfiles' is not a registered tag library. Must be one of: admin_list admin_modify admin_urls cache i18n import_export_tags l10n log static tz -->
+{% load static %}
+
+{% block head %}
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+
+<link rel="stylesheet" href="{% static 'css/draw_diagram.css' %}">
+
+
+<style type="text/css">
+	body {
+		/* background-color: gainsboro; */
+		background-image: url(https://i0.wp.com/travelwithme247blog.com/wp-content/uploads/2019/11/mainquad-scaled.jpg);
+		background-repeat: no-repeat;
+		background-position: center bottom;
+		background-attachment: fixed;
+		background-size: cover;
+	}
+
+
+	/* body {
+  background-image: url(../static/imgs/Background.png);
+  background-repeat: no-repeat;
+background-position: center center;
+background-attachment: fixed;
+background-size: cover;
+} */
+
+	/* #float{
+		position:fixed;
+		width:60px;
+		height:60px;
+		bottom:40px;
+		right:40px;
+		background-color:#0C9;
+		color:#FFF;
+		border-radius:50%;
+		text-align:center;
+		border: 2px solid #555555
+	}
+
+.my-float{
+		margin-top:22px;
+	}
+
+#chat {
+		display: block;
+	}
+
+.system-col, .essay-col{
+		resize: both;
+		overflow: auto;
+	} */
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<a id="preview_btn" href="#popup_card" data-reveal-id="popupModal" style="visibility: hidden;">POP UP</a>
+<div id="popup_card">
+	<div id="popupModal" class="reveal-modal">
+		<h2>Feedback Preview</h2>
+		<span class='init'></span>
+		<p>
+			<font id="preview_content" size="4">window window window.window window window. window.
+			</font>
+		</p>
+		<a href="#" class="close-reveal-modal">×</a>
+	</div>
+</div>
+
+
+
+<!-- <script>
+	$(document).ready(function() {
+		setInterval(function() {
+	let editorData = editor.getData();
+	saveLog('AUTO_SAVE_TEXT', {
+		"editor_data": editorData,
+		"session": configs.session,
+		"context": configs.context
+	}, 'auto-save', config.session, editorData, 'N');
+	console.log('saveed')
+	}, 5000);});
+</script> -->
+
+
+
+<div class="system-container p-4 mx-auto">
+	<!-- <h3 style="color:#C2EFEB">Peer Feedback</h3> -->
+	{% block top_content %}
+	{% endblock %}
+
+
+	<div class="d-flex CR-layout">
+
+		<div class="system-col essay-col" style="width: 60rem;">
+			<div class="self-CR h-100 d-flex flex-column">
+				<div>
+					<h5 class="title-header">Safety Incident Scenario</h5>
+				</div>
+
+
+				<div class="panel-container panel-container-col" style="flex: 1 0 auto; background: rgb(255, 255, 255)">
+
+					<!-- <div class="text-info-panel unselectable" style="height: 30px; background-color: gainsboro;">
+						<span class="font-weight-bold">
+							<i style="color:#1b1b1b; font-size: small;">
+								Video origin: @KBYUEleven https://www.youtube.com/watch?v=aPOPH_xtmQk 
+							</i>
+						</span>
+					</div>
+	
+					<hr> -->
+
+					<video controls>
+						<!-- <source src="https://drive.google.com/uc?export=download&amp;
+							id=1R60s1RWf-Nds-543JVbeVRAMy8adki9S"> -->
+						<source src="https://drive.google.com/uc?export=download&amp;
+							id=19eO2MRrrH55HR3WA93eS4sttdX0VACb2">
+					</video>
+				</div>
+
+
+
+				<div id="submit_text_styled"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+<!-- 	<div id="vega_vis" style="height: 600px; width: 700px;"></div>
+ -->
+<!-- Consider moving this to template and append it programmtically.
+However, this is a pretty general component so it's ok to just put it here -->
+<div class="modal fade" id="general_modal" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title"></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<!-- Don't use .d-none; otherwise, $.show() would not work. .d-none us !important -->
+				<button id="secondary_button" type="button" class="btn btn-sm btn-secondary" data-dismiss="modal"
+					style="display: none"></button>
+				<button id="close_button" type="button" class="btn btn-sm btn-primary" data-dismiss="modal"></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<!-- <div id="disqus_thread" style="display: none;"></div>
+<script>
+	/**
+	 *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+	 *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+	 */
+	/*
+	var disqus_config = function () {
+		this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+		this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+	};
+	*/
+	(function () {  // DON'T EDIT BELOW THIS LINE
+		var d = document, s = d.createElement('script');
+
+		s.src = 'https://co-roots.disqus.com/embed.js';
+
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+	})();
+</script> -->
+
+<!-- <p>
+	<button class="btn btn-default" type="button" data-toggle="collapse" data-target="#detailPanel" aria-expanded="false" aria-controls="collapseExample">
+		Details
+	</button>
+</p>
+<div class="collapse" id="detailPanel">
+	<div class="card card-block" id="detail">
+	</div>
+</div> -->
+
+
+
+<!-- <div id="variable_container"></div>-->
+<!-- <div id="googlechart"></div> -->
+<div id="main_alert_container">
+	<div class="alert alert-dismissible" role="alert" style="display: none">
+		<span class="alert-text"></span>
+		<!-- do not use data-dismiss="alert"; it will removes the alert from DOM -->
+		<button type="button" class="close" aria-label="Close" onclick="$(this).closest('.alert').fadeOut();">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
+</div>
+
+
+
+
+{% include "va_templates.html" %}
+
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+	var test = '{{ test | escapejs }}';
+
+	var configs = {
+		// variables from back-end
+		"user": '{{ request.user.username }}',
+		"condition": '{{ condition }}',
+		"context": '{{ context }}',
+		"session": "safetybot",
+
+		// local setting
+		"show_hamburger": false,
+	};
+
+	// if (configs.task === 'campaign') {
+	// 	$('#next').attr('href', '/postsurvey');
+	// }
+	// else if (configs.task === 'practice') {
+	// 	$('#next').attr('href', '/task');
+	// }
+</script>
+<!-- Try out Vega -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/vega@5.9.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@4.0.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6.2.1"></script> -->
+
+<script src="{% static 'js/lodash-4.17.20.min.js' %}"></script>
+
+
+<script src="{% static 'js/FilterHelper.js' %}"></script> <!-- not sure what is this... -->
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script src="{% static 'js/util.js' %}"></script>
+
+
+<!-- <script src="{% static 'js/mentorbot.js' %}"></script> -->
+<!-- <script src="{% static 'js/safetybot.js' %}"></script> -->
+<!-- <script src="{% static 'js/essay_data.js' %}"></script> -->
+
+
+<!-- chatbot code here -->
+<!-- <script src="{% static 'component/Bubbles.js' %}"></script> -->
+<!-- <script src="{% static 'js/chatbot-interface-safetybot.js' %}"></script> -->
+
+<!-- popup toolstips code here -->
+<script src="{% static 'js/mui/material-ui.development.js' %}" crossorigin></script>
+<script type="text/babel" src="{% static 'js/scenario_react.js' %}"></script>
+
+<script type="text/javascript">
+	// warn user before refresh
+	window.onbeforeunload = function (e) { e.returnValue = ''; };
+	configs.session = 'safetybot';
+
+	// hide hamburger if needed
+	if (!configs.show_hamburger) {
+		document.querySelector('#hamburger').remove();
+		document.querySelector('.navbar-brand').remove();
+	}
+
+	$(async function () {
+		response = saveLog("PAGELOAD", {}, '', configs.session);
+		// entry();
+	});
+
+	var chatBot = document.getElementById("chat");
+
+	var floatBtn = document.getElementById("float");
+
+	var maximize = document.getElementById("maximize");
+
+	$('#float').click(function () {
+		if (chatBot.style.display != "none") {
+			chatBot.style.display = "none";
+			$("i", this).toggleClass("fa fa-plus my-float");
+		}
+		else {
+			chatBot.style.display = "block";
+		}
+		/*$('#maximize').show('1000'); */
+	});
+</script>
+
+
+
+{% block bottom_content %}
+{% endblock %}
+
+{% endblock %}

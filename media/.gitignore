@@ -1,0 +1,4 @@
+# http://stackoverflow.com/questions/5600621/gitignore-exclude-files-in-directory-but-not-certain-directories
+*
+!.gitignore
+

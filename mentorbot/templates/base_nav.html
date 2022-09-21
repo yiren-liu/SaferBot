@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+<!-- {% load static %} -->
+<!-- <script src="{% static 'js/hamburger.js' %}"></script> -->
+
+{% block nav %}
+<nav class="navbar navbar-expand navbar-dark bg-dark fixed-top px-4">
+	<div class="nav-item dropdown" id="hamburger"></div>
+	<span class="navbar-brand mb-0 h1" style="left: 70px; position: fixed;">Co-Roots</span>
+	<ul class="navbar-nav ml-auto">
+		<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				logged in as: {{ request.user.username }}
+			</a>
+			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+				<a class="dropdown-item" onclick="{
+					navigator.clipboard.writeText('{{ request.user.username }}');
+					alert('Reference Number copied: {{ request.user.username }}!');
+				}">Copy Reference Number to Clipboard</a>
+				<a class="dropdown-item" href="/logout">Log Out</a>
+			</div>
+		</li>
+	</ul>
+</nav>
+
+<!-- A dummy div to pushdown content -->
+<div style="height: 56px;"></div>
+{% endblock %}
+
+{% block footer %}
+<!-- <div class="container">
+	<hr>
+	<footer>
+		<p>&copy;2017 Visual Analytics Interface Developed by Eric Yen</p>
+	</footer>
+</div> -->
+{% endblock %}

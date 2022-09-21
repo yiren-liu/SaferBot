@@ -1,0 +1,39 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+
+[[source]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/"
+verify_ssl = true
+
+[dev-packages]
+autopep8 = "*"
+
+[packages]
+django = "==2.0.13"
+gunicorn = "*"
+django-heroku = "*"
+requests = "*"
+numpy = "*"
+pandas = "*"
+statsmodels = "*"
+scipy = "*"
+django-import-export = "==2.4.0"
+google-cloud-dialogflow = "*"
+google-auth = "*"
+dj-database-url = "*"
+pymysql = "*"
+mysqlclient = "==2.0.3"
+sagemaker = "*"
+django-compressor = "*"
+django-compressor-toolkit = "*"
+nltk = "*"
+scikit-learn = "*"
+torch = "*"
+torchvision = "*"
+torchaudio = "*"
+transformers = "*"
+
+[requires]
+python_version = "3"

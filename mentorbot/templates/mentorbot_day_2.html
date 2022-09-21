@@ -1,0 +1,426 @@
+{% extends 'base_nav.html' %}
+
+<!-- 'staticfiles' is not a registered tag library. Must be one of: admin_list admin_modify admin_urls cache i18n import_export_tags l10n log static tz -->
+{% load static %}
+
+{% block head %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<link rel="stylesheet" href="{% static 'css/draw_diagram.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'inlineDisqussions/inlineDisqussions.css' %}" />
+<link rel="stylesheet" href="{% static 'side-comments-master/release/side-comments.css' %}"/>
+<link rel="stylesheet" href="{% static 'side-comments-master/release/themes/default-theme.css' %}"/>
+<script src="{% static 'inlineDisqussions/inlineDisqussions.js' %}"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/29.1.0/classic/ckeditor.js"></script>
+<script src="{% static 'side-comments-master/release/side-comments.js' %}"></script>
+
+<script>
+
+	disqus_shortname = 'co-roots';
+	// $(document).ready(function($) {
+	// 	$("p").inlineDisqussions();
+	// });
+// 	$(function($){
+// 		$(".init").inlineDisqussions();
+// });	
+
+	// try {
+	// 	// alert('bbbb');
+	// 	$(document).on('myCustomEvent', function($) {
+	// 	alert('abc');
+	// 	$(".each").inlineDisqussions();
+	// });
+	// } catch (err){
+	// 	alert(err);
+	// }
+
+</script>
+
+<style type="text/css">
+body {
+  background-image: url(../static/imgs/Background.png);
+  background-repeat: no-repeat;
+background-position: center center;
+background-attachment: fixed;
+background-size: cover;
+}
+
+/* #float{
+		position:fixed;
+		width:60px;
+		height:60px;
+		bottom:40px;
+		right:40px;
+		background-color:#0C9;
+		color:#FFF;
+		border-radius:50%;
+		text-align:center;
+		border: 2px solid #555555
+	}
+
+.my-float{
+		margin-top:22px;
+	}
+
+#chat {
+		display: block;
+	}
+
+.system-col, .essay-col{
+		resize: both;
+		overflow: auto;
+	} */
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<a id="preview_btn" href="#popup_card" data-reveal-id="popupModal" style="visibility: hidden;">POP UP</a>
+<div id="popup_card">
+<div id="popupModal" class="reveal-modal">
+     <h2>Feedback Preview</h2>
+	 <span class='init'></span>
+     <p>
+     <font id="preview_content" size="4">window window window.window window window. window.
+         </font>
+    </p>
+    <a href="#" class="close-reveal-modal">×</a>
+</div>
+</div>
+
+
+
+<!-- <script>
+	$(document).ready(function() {
+		setInterval(function() {
+	let editorData = editor.getData();
+	saveLog('AUTO_SAVE_TEXT', {
+		"editor_data": editorData,
+		"session": configs.session,
+		"context": configs.context
+	}, 'auto-save', config.session, editorData, 'N');
+	console.log('saveed')
+	}, 5000);});
+</script> -->
+<div class="system-container p-4 mx-auto">
+	<!-- <h3 style="color:#C2EFEB">Peer Feedback</h3> -->
+	{% block top_content %}
+	{% endblock %}
+
+
+	<div class="d-flex CR-layout">
+
+		<div class="system-col essay-col" style="width: 700px;">
+			<div class="self-CR h-100 d-flex flex-column">
+				<div>
+					<h5 style="color:#C2EFEB">Essay feedback</h5>
+					<!-- <div class="button-list mb-2"></div> -->
+				</div>
+				<div class="panel-container panel-container-col" style="flex: 1 0 auto; background: rgb(219, 219, 219)">
+					<div class="text-info-panel" style="height: 40px;">
+						<span class="font-weight-bold"><i style="color:#41337A">Essays from other students</i></span>
+						<button id="experience"  class="btn_fancy_small" style="font-style: italic;">Experience</button>
+						<button id="opinion"  class="btn_fancy_small" style="text-decoration: underline;">Opinion</button>
+						<button id="hypothesis"  class="btn_fancy_small" style="font-weight: bold;">Hypothesis</button>
+						<button id="action_item"  class="btn_fancy_small" style="background-color:  #A3A300;">Action Items</button>
+						<button id="clear"  class="btn_fancy_small" style="background-color:  #E02900;">UNDO</button>
+					</div>
+					<hr>
+					<div class="essay-display-panel" style="height: 300px; white-space: pre-line; font-size: 18px; ">
+
+					</div>
+					<hr>
+					<div class="text-info-panel" style="height: 40px">
+						<span class="font-weight-bold"><i style="color:#41337A">Please provide your feedback to this student below based on the chatbot's instructions</i></span>
+					</div>
+					<hr>
+					<div class="editor-panel" style="height: 370px">
+						<textarea id="editor" name="editor">
+
+						</textarea>
+
+						<!-- <script>
+							// todo: add word count stats
+
+							CKEDITOR.replace('editor');
+							// CKEDITOR.inline('editor1');
+						</script> -->
+						<br>
+						<p>
+                            <button id="submit_text" class="btn_fancy">Submit</button>
+							<i>Last Saved Time: <span id="last_saved_time"></span></i>
+						</p>
+					</div>
+				</div>
+				<!-- <div class="button-list-next-session mb-2"></div> -->
+			</div>
+		</div>
+
+		<div class="system-col chatbot-col" style="width: 500px;">
+			<div class="h-100 d-flex flex-column">
+				<div>
+					<h5 style="color:#C2EFEB;float: left;">Chatbot</h5>
+					<h5 style="color:#C2EFEB;float: right;">User</h5>
+					<!-- <div class="button-list mb-2"></div> -->
+				</div>
+				<div class="panel-container panel-container-col" style="flex: 1 0 auto;">
+					<!-- <div class="w-100 viz-feature" style="height: 450px"><div class="chart w-100 h-100"></div></div> -->
+
+					<!-- container element for chat window -->
+					<div id="chat" style="height: 750px; background: rgb(219, 219, 219); opacity: 1; border-radius: 25px;"></div>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+</div>
+
+
+
+<!-- 	<div id="vega_vis" style="height: 600px; width: 700px;"></div>
+ -->
+<!-- Consider moving this to template and append it programmtically.
+However, this is a pretty general component so it's ok to just put it here -->
+<div class="modal fade" id="general_modal" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title"></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<!-- Don't use .d-none; otherwise, $.show() would not work. .d-none us !important -->
+				<button id="secondary_button" type="button" class="btn btn-sm btn-secondary" data-dismiss="modal" style="display: none"></button>
+				<button id="close_button" type="button" class="btn btn-sm btn-primary" data-dismiss="modal"></button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- <button id="float">
+	<i class="fas fa-times my-float" id = "maximize"></i>
+</button> -->
+
+
+<!-- <div id="disqus_thread" style="display: none;"></div> -->
+<script>
+	/**
+	 *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+	 *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+	 */
+	/*
+	var disqus_config = function () {
+		this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+		this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+	};
+	*/
+	(function() {  // DON'T EDIT BELOW THIS LINE
+		var d = document, s = d.createElement('script');
+		
+		s.src = 'https://co-roots.disqus.com/embed.js';
+		
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+	})();
+</script>
+
+<!-- <p>
+	<button class="btn btn-default" type="button" data-toggle="collapse" data-target="#detailPanel" aria-expanded="false" aria-controls="collapseExample">
+		Details
+	</button>
+</p>
+<div class="collapse" id="detailPanel">
+	<div class="card card-block" id="detail">
+	</div>
+</div> -->
+
+
+
+<!-- <div id="variable_container"></div>-->
+<!-- <div id="googlechart"></div> -->
+<div id="main_alert_container">
+	<div class="alert alert-dismissible" role="alert" style="display: none">
+		<span class="alert-text"></span>
+		<!-- do not use data-dismiss="alert"; it will removes the alert from DOM -->
+		<button type="button" class="close" aria-label="Close" onclick="$(this).closest('.alert').fadeOut();">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
+</div>
+
+
+
+{% include "va_templates.html" %}
+
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+	var test = '{{ test | escapejs }}';
+
+	var configs = {
+		// variables from back-end
+		"user": '{{ request.user.username }}',
+		"condition": '{{ condition }}',
+		"context": '{{ context }}',
+        "session": "mentorbot",
+		"use_checkbox": false,
+
+		// "variable_order": {{ variable_order }},
+		"variable_order": [...Array(100).keys()],
+		// local setting
+		"graph_editable": true,                 // default to true
+		"data_visualization": false,            // enable/disable data visualization feature
+		"data_regression": true,                // enable/disable regression feature
+		"assisting": false,                     // enable/disable assisting features
+		"hypothesis_input": false,              // enable/disable hypothesis input feature (popup hypothesis panel)
+		"position_fixed": false,                // the eight variable placeholder on the graph
+		"variable_shape": 'circle' || 'rect',   // shape of the variable
+		"variable_hover_show_detail": true,     // enable/disable showing variable description on the top panel
+		"variable_click_select": false,         // enable/disable variable selection by clicking
+		"show_entered_hypotheses": true,        // show hypothesis on the middle right panel (allow editing)
+		"add_new_variable": true,               // enable/disable adding new variable
+		"visualize_stakeholder": false,         // enable/disable visualizing stakeholder
+		"relationship_inspiration": false,      // enable/disable "relationship inspiration" button
+		"hint_after_writing_hypothesis": false, // show a reminder to tell what users to do after writing a hypothesis
+		"save_and_load_graph": true,            // "save graph" and "load graph" buttons
+		"show_second_graph": false,             // show a separate graph into the interface
+		// GraphUI setting
+		"graph_ui_configs": {
+			"variable_circle_r": 29,
+		}
+	};
+
+	// if (configs.task === 'campaign') {
+	// 	$('#next').attr('href', '/postsurvey');
+	// }
+	// else if (configs.task === 'practice') {
+	// 	$('#next').attr('href', '/task');
+	// }
+</script>
+<!-- Try out Vega -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/vega@5.9.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@4.0.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6.2.1"></script> -->
+
+<script src="{% static 'js/lodash-4.17.20.min.js' %}"></script>
+
+
+<script src="{% static 'js/FilterHelper.js' %}"></script> <!-- not sure what is this... -->
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script src="{% static 'js/util.js' %}"></script>
+<!-- <script src="{% static 'js/datalib.js' %}"></script>
+<script src="{% static 'js/modules/DataVariable.js' %}"></script>
+<script src="{% static 'js/modules/CausalDiagram.js' %}"></script>
+<script src="{% static 'js/modules/VisualSetting.js' %}"></script>
+<script src="{% static 'js/modules/GraphUI.js' %}"></script>
+<script src="{% static 'js/modules/CausalInspirationFeature.js' %}"></script>
+<script src="{% static 'js/modules/RegressionFeature.js' %}"></script>
+<script src="{% static 'js/modules/NarrativePanel.js' %}"></script>
+<script src="{% static 'js/modules/VizFeature.js' %}"></script>
+<script src="{% static 'js/modules/VICA.js' %}"></script>
+<script src="{% static 'js/modules/CrowdHint.js' %}"></script>
+<script src="{% static 'js/modules/CR.js' %}"></script>
+<script src="{% static 'js/configuration.js' %}"></script>
+<script src="{% static 'js/diagram_user.js' %}"></script> -->
+
+<script src="{% static 'js/mentorbot.js' %}"></script>
+<script src="{% static 'js/essay_data.js' %}"></script>
+
+
+<!-- chatbot code here -->
+<script src="{% static 'component/Bubbles.js' %}"></script>
+<script src="{% static 'js/chatbot-interface-mentorbot.js' %}"></script>
+
+<script type="text/javascript">
+	$(async function() {
+		response = saveLog("PAGELOAD", {}, '', 'mentorbot');
+		entry();
+		// let essay = all_essays.get_next_essay();
+		// // todo: handle essay run out
+		// if (essay != undefined) {
+		// 	display_essay(essay);
+
+		// 	// todo: highlight essay reader
+
+		// }
+		editor_setup_text(response['content']);
+	});
+
+	var chatBot = document.getElementById("chat");
+
+	var floatBtn = document.getElementById("float");
+
+	var maximize = document.getElementById("maximize");
+
+	$('#float').click(function() {
+		if (chatBot.style.display != "none") {
+			chatBot.style.display = "none";
+			$("i", this).toggleClass("fa fa-plus my-float");
+		}
+		else {
+			chatBot.style.display = "block";
+		}
+		/*$('#maximize').show('1000'); */
+	});
+</script>
+
+<script>
+		// First require it.
+var SideComments = require('side-comments');
+
+var currentUser = {
+  id: 1,
+  avatarUrl: "http://f.cl.ly/items/0s1a0q1y2Z2k2I193k1y/default-user.png",
+  name: "You"
+}
+
+var existingComments = [
+  {
+    "sectionId": "1",
+    "comments": [
+      {
+        "authorAvatarUrl": "http://f.cl.ly/items/1W303Y360b260u3v1P0T/jon_snow_small.png",
+        "authorName": "Jon Sno",
+        "comment": "I'm Ned Stark's bastard. Related: I know nothing."
+      },
+      {
+        "authorAvatarUrl": "http://f.cl.ly/items/2o1a3d2f051L0V0q1p19/donald_draper.png",
+        "authorName": "Donald Draper",
+        "comment": "I need a scotch."
+      }
+    ]
+  },
+  {
+    "sectionId": "3",
+    "comments": [
+      {
+        "authorAvatarUrl": "http://f.cl.ly/items/0l1j230k080S0N1P0M3e/clay-davis.png",
+        "authorName": "Senator Clay Davis",
+        "comment": "These Side Comments are incredible. Sssshhhiiiiieeeee."
+      }
+    ]
+  }
+];
+
+// Then, create a new SideComments instance, passing in the wrapper element and the optional the current user and any existing comments.
+sideComments = new SideComments('#commentable-area', currentUser, existingComments);
+
+
+</script>
+
+
+
+{% block bottom_content %}
+{% endblock %}
+
+{% endblock %}

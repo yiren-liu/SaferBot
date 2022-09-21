@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block head %}
+
+<link rel="stylesheet" href="{% static 'css/visualization.css' %}">
+<!-- <script src="{% static 'js/d3.min.js' %}"></script> -->
+
+
+{% endblock %}
+
+
+{% block content %}
+
+	<div class="wrapper">
+		<h4 id="task_question"></h4>
+		<div style="padding-left: 100px">
+			<button class="btn btn-primary" type="button" onclick="constructCurrentGraph(); verifyGraph()">Verify Graph</button>
+			<button class="btn btn-info   " type="button" onclick="constructCurrentGraph(); extendGraph()">Extend Graph</button>
+			<button class="btn btn-default" type="button" onclick="clearGraphEdges()">Clear Edge</button>
+			<button class="btn btn-default" type="button" onclick="clearGraph()">Clear Graph</button>
+			<div class="dropdown" style="display: inline;">
+				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<span id="dataset_name">Dataset</span> <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+					<li><a class="dropdown-item" href="/tutorial">Admission data 1</a></li> <!-- gender biased -->
+					<li><a class="dropdown-item" href="/practice">Admission data 2</a></li>
+					<!-- <li><a class="dropdown-item" href="/task">Crowdfunding data</a></li>
+					<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(-)')">Crowdfunding (-)</a></li>
+					<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(X-Y)')">Crowdfunding (X-Y)</a></li>
+					<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(X-MY)')">Crowdfunding (X-MY)</a></li>
+					<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(XM-Y)')">Crowdfunding (XM-Y)</a></li>
+					<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(X-M-Y)')">Crowdfunding (X-M-Y)</a></li>
+					<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(X-(M-Y))')">Crowdfunding (X-(M-Y)</a></li> -->
+				</ul>
+			</div>
+		</div>
+		<br>
+		<div style="position: relative; height: 700px;">
+			<div id="graph_container"></div>
+
+			<div id="chart_container">
+				<div class="chart"></div> <!--  the content is created in initChart() -->
+				<div class="detail"></div>
+			</div>
+
+			<div id="suggestion_container">
+			</div>
+
+		</div>
+		<!-- <h4 id="task_finish">If you are satisfied with your answers and would like to end the task, click here: <button class="btn btn-default" id="done-btn">I'm finished</button> <a class="btn btn-success" id="next" style="display: none" href="/task">Next</a></h4> -->
+		<br>
+		<p>
+			<button class="btn btn-default" type="button" data-toggle="collapse" data-target="#detailPanel" aria-expanded="false" aria-controls="collapseExample">
+				Details
+			</button>
+		</p>
+		<div class="collapse" id="detailPanel">
+			<div class="card card-block" id="detail">
+			</div>
+		</div>
+		<!-- <div id="variable_container"></div>-->
+		<!-- <div id="googlechart"></div> -->
+		
+		
+	</div>
+
+{% endblock %}
+
+{% block javascript %}
+	<!-- <script src="{% static 'js/jquery-2.1.3.min.js' %}"></script> -->
+	<!-- <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script> -->
+	<!-- for the new 'Material Chart' API -->
+	<script type="text/javascript">
+
+		var configs = {
+			"condition": '{{ condition }}',
+			"task": '{{ task }}',
+			"campaigns_data_path": '{{ campaigns_data_path }}',
+			"variable_order": {{ variable_order }}
+		};
+
+		if (configs.task === 'campaign') {
+			$('#next').attr('href', '/postsurvey');
+		}
+		else if (configs.task === 'practice') {
+			$('#next').attr('href', '/task');
+		}
+	</script>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<!--
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>	
+	<script type="text/javascript">
+		google.load('visualization', '1.1', {'packages':['corechart']});
+	</script>
+-->
+	<script src="{% static 'js/util.js' %}"></script>
+	<script src="{% static 'js/datalib.js' %}"></script>
+	<script src="{% static 'js/FilterHelper.js' %}"></script>
+	<script src="{% static 'js/visualization.js' %}"></script>
+
+	<script type="text/javascript">
+		$(function(){
+			saveLog("PAGELOAD");
+
+			$('button#done-btn').click(function(){
+				saveLog("TASKDONE");
+				$('#next').fadeIn();
+			})
+		})
+	</script>
+
+	<template id="suggestion_block_template">
+		<div class="suggestion_block">
+			<div class="detail">
+				<button><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span></button>
+				<span class="description"></span>
+			</div>
+			<div class="chart">
+				<div class="visual"></div>
+				<div class="trend-center">&#10230;</div>
+				<div class="trend-center-bottom">&#10230;</div>
+				<div class="trend-left">&#10230;</div>
+				<div class="trend-right">&#10230;</div>
+			</div>
+		</div>
+	</template>
+{% endblock %}

@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/draw_diagram.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="wrapper">
+	<div class="debug-corner debug">
+		<div id="dataset_menu" class="dropdown float-right">
+			User: {{ request.user }} |
+			Dataset:
+			<button class="btn btn-outline-secondary dropdown-toggle" type="button" id="change_task_button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<span id="dataset_name">Change Task</span> <span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="change_task_button" id="task_menu">
+				<li><a class="dropdown-item" href="/draw_diagram/safety_draw/">Safety Report</a></li>
+				<li><a class="dropdown-item" href="/draw_diagram/safety_report_viz/">Safety Report with Viz</a></li>
+				<li><a class="dropdown-item" href="/draw_diagram/auto_mpg/">Car MPG</a></li>
+				<li><a class="dropdown-item" href="/draw_diagram/auto_mpg_viz/">Car MPG with Viz</a></li>
+				<li><a class="dropdown-item" href="/draw_diagram/application/">College Admission</a></li>
+				<li><a class="dropdown-item" href="/draw_diagram/application_viz/">College Admission with Viz</a></li>
+				<li><a class="dropdown-item" href="/draw_diagram/campaign_viz/">Campaign with Viz</a></li>
+				<h1 class="dropdown-header">Note: Save changes before switching tasks</h1>
+			</ul>
+		</div>
+	</div>
+	
+
+	<h3>Causal Analysis</h3>
+	<h5 id="task_question"></h5>
+	
+	<div id="graph_controls" style="display: none;">
+		<!-- <button class="btn btn-primary" type="button" onclick="constructCurrentGraph(); verifyGraph()">Verify Graph</button>
+		<button class="btn btn-info   " type="button" onclick="constructCurrentGraph(); extendGraph()">Extend Graph</button> -->
+		<button class="btn btn-default" type="button" onclick="clearGraphEdges()">Clear Edges</button>
+		<button class="btn btn-default" type="button" onclick="clearGraph()">Clear Graph</button>
+		<div class="dropdown" style="display: inline;">
+			<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<span id="dataset_name">Dataset</span> <span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+				<li><a class="dropdown-item" href="/tutorial">Admission data 1</a></li> <!-- gender biased -->
+				<li><a class="dropdown-item" href="/practice">Admission data 2</a></li>
+				<!-- <li><a class="dropdown-item" href="/task">Crowdfunding data</a></li>
+				<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(-)')">Crowdfunding (-)</a></li>
+				<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(X-Y)')">Crowdfunding (X-Y)</a></li>
+				<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(X-MY)')">Crowdfunding (X-MY)</a></li>
+				<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(XM-Y)')">Crowdfunding (XM-Y)</a></li>
+				<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(X-M-Y)')">Crowdfunding (X-M-Y)</a></li>
+				<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(X-(M-Y))')">Crowdfunding (X-(M-Y)</a></li> -->
+			</ul>
+		</div>
+	</div>
+
+	<br>
+
+	<div class="vica-container core_model_container">
+		<div id="top_panel" class="panel-bordered stakeholder-panel" style="display: nonee;">
+			<div id="top_panel_buttons" class="p-1 top_panel_buttons"></div>
+		</div>
+		<div id="middle_panel" class="disable-select panel-bordered panel-margin-top main-panel position-relative">
+			<!--  include the variable panel and the graph panel  -->
+			<!-- "#graph_container" is just a div wrapper for the svg. The width and height of the div will be set 
+			     programmatically, and the svg 100% utilize the div space. -->
+			<div id="graph_container" class="graph-ui panel-bordered disable-select"></div> 
+			<div id="middle_right_panel" class="hypothesis-panel position-absolute panel-bordered"></div>
+			
+		</div>
+		<div id="main_variable_detail_panel" class="variable-detail-panel panel-bordered">
+			Variable <span class="name font-weight-bold"><i>name</i></span> <span class="type badge badge-secondary"></span>: 
+			<span class="long-description"><i>description (hover over a variable to view its description)</i></span>
+		</div>
+
+		<div id="chart_container" class="panel-bordered panel-margin-left" style="display: none">
+			<div class="chart"></div> <!--  the content is created in initChart() -->
+			<div class="detail"></div>
+		</div>
+
+		<div id="regression_panel" class="panel-bordered panel-margin-left background-white overflow-auto" style="display: none"></div>		
+
+		<!-- <div id="bottom_panel" style="position: relative; height: 700px; display: none">
+
+			<div id="chart_container" style="display: nonen">
+				<div class="chart"></div>  
+				<div class="detail"></div>
+			</div>
+			<div id="bottom_right_panel"></div>
+
+			<div id="suggestion_container" style="display: nonee">
+			</div>
+		</div> -->
+	</div>
+
+	<br>
+
+	<div id="crowd_diagram_debug" class="not-debug" style="display: none">
+		Crowd Diagram:
+		<br>
+		<textarea style="width: 100%; height: 300px;"></textarea>
+		<button class="btn btn-primary" type="button" onclick="debugUpdateDiagram()">Update</button>
+	</div>
+
+	
+
+	<br>
+	
+	
+	
+	<!-- <h4 id="task_finish">If you are satisfied with your answers and would like to end the task, click here: <button class="btn btn-default" id="done-btn">I'm finished</button> <a class="btn btn-success" id="next" style="display: none" href="/task">Next</a></h4> -->
+	<br>
+	
+<!-- 	<div id="vega_vis" style="height: 600px; width: 700px;"></div>
+ -->
+	<!-- Consider moving this to template and append it programmtically. 
+	However, this is a pretty general component so it's ok to just put it here -->
+	<div class="modal fade" id="general_modal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+				</div>
+				<div class="modal-footer">
+					<!-- Don't use .d-none; otherwise, $.show() would not work. .d-none us !important -->
+					<button id="secondary_button" type="button" class="btn btn-sm btn-secondary" data-dismiss="modal" style="display: none"></button>
+					<button id="close_button" type="button" class="btn btn-sm btn-primary" data-dismiss="modal"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<!-- <p>
+		<button class="btn btn-default" type="button" data-toggle="collapse" data-target="#detailPanel" aria-expanded="false" aria-controls="collapseExample">
+			Details
+		</button>
+	</p>
+	<div class="collapse" id="detailPanel">
+		<div class="card card-block" id="detail">
+		</div>
+	</div> -->
+
+
+
+	<!-- <div id="variable_container"></div>-->
+	<!-- <div id="googlechart"></div> -->
+	<div id="main_alert_container">	
+		<div class="alert alert-dismissible" role="alert" style="display: none">
+			<span class="alert-text"></span>
+			<button type="button" class="close" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>	
+	
+	</div>
+
+</div>
+
+{% include "./va_templates.html" %}
+
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+
+	
+	var configs = {
+		// variables from back-end
+		"user": '{{ request.user.username }}',
+		"condition": '{{ condition }}',
+		"task": '{{ task }}',
+		"saved_diagram": JSON.parse('{{ saved_diagram | escapejs }}'),
+		// "peer_diagram": JSON.parse('{{ peer_diagram | escapejs }}'),
+		"peer_diagrams": JSON.parse('{{ peer_diagrams | escapejs }}'),
+		// "variable_order": {{ variable_order }},
+		"variable_order": [...Array(100).keys()],
+		// local setting
+		"graph_editable": true,                 // default to true
+		"data_visualization": false,            // enable/disable data visualization feature
+		"data_regression": true,                // enable/disable regression feature
+		"assisting": false,                     // enable/disable assisting features
+		"hypothesis_input": false,              // enable/disable hypothesis input feature (popup hypothesis panel)
+		"position_fixed": false,                // the eight variable placeholder on the graph
+		"variable_shape": 'circle' || 'rect',   // shape of the variable
+		"variable_hover_show_detail": true,     // enable/disable showing variable description on the top panel
+		"variable_click_select": false,         // enable/disable variable selection by clicking
+		"show_entered_hypotheses": true,        // show hypothesis on the middle right panel (allow editing)
+		"add_new_variable": true,               // enable/disable adding new variable
+		"visualize_stakeholder": false,         // enable/disable visualizing stakeholder 
+		"relationship_inspiration": false,      // enable/disable "relationship inspiration" button
+		"hint_after_writing_hypothesis": false, // show a reminder to tell what users to do after writing a hypothesis
+		"save_and_load_graph": true,            // "save graph" and "load graph" buttons 
+		"show_second_graph": false,             // show a separate graph into the interface
+		// GraphUI setting
+		"graph_ui_configs": {
+			"variable_circle_r": 29,
+		}
+	};
+
+	// if (configs.task === 'campaign') {
+	// 	$('#next').attr('href', '/postsurvey');
+	// }
+	// else if (configs.task === 'practice') {
+	// 	$('#next').attr('href', '/task');
+	// }
+</script>
+<!-- Try out Vega -->
+<script src="https://cdn.jsdelivr.net/npm/vega@5.9.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@4.0.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6.2.1"></script>
+
+<script src="{% static 'js/FilterHelper.js' %}"></script> <!-- not sure what is this... -->
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="{% static 'js/util.js' %}"></script>
+<script src="{% static 'js/datalib.js' %}"></script>
+<script src="{% static 'js/modules/DataVariable.js' %}"></script>
+<script src="{% static 'js/modules/CausalDiagram.js' %}"></script>
+<script src="{% static 'js/modules/VisualSetting.js' %}"></script>
+<script src="{% static 'js/modules/GraphUI.js' %}"></script>
+<script src="{% static 'js/modules/CausalInspirationFeature.js' %}"></script>
+<script src="{% static 'js/modules/RegressionFeature.js' %}"></script>
+<script src="{% static 'js/modules/NarrativePanel.js' %}"></script>
+<script src="{% static 'js/modules/VizFeature.js' %}"></script>
+<script src="{% static 'js/modules/VICA.js' %}"></script>
+<script src="{% static 'js/configuration.js' %}"></script>
+<script src="{% static 'js/draw_diagram.js' %}"></script>
+
+<script type="text/javascript">
+	$(function(){
+		saveLog("PAGELOAD");
+	})
+</script>
+
+
+{% endblock %}

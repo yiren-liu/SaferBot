@@ -1,0 +1,568 @@
+.wrapper {
+  margin: 10px 50px;
+  width: 1100px;
+  position: relative;
+}
+
+.background-green {
+  background-color: #59a14f;
+}
+
+.background-red {
+  background-color: #d11800;
+}
+
+.dropdown-task {
+  cursor: pointer;
+}
+
+.panel-header {
+  height: 43px;
+  text-align: center;
+  background-color: aliceblue;
+  outline: 3px solid black;
+  font-size: 25px;
+  line-height: 43px;
+  float: left;
+}
+
+#variable_container {
+  width: 200px;
+  max-height: 600px;
+  overflow: scroll;
+  position: absolute;
+  left: 0px;
+  top: 50px;
+  background-color: white;
+}
+
+#graph_container {
+  position: absolute;
+  left: 0px;
+  width: 600px;
+  height: 700px;
+  outline: 3px solid black;
+  background-color: white;
+}
+
+#suggestion_container {
+  position: absolute;
+  left: 996px;
+  width: 550px;
+  height: 700px;
+  outline: 3px solid black;
+  overflow: hidden;
+}
+
+#suggestion_container_cover {
+  position: absolute;
+  left: 996px;
+  width: 550px;
+  height: 700px;
+  outline: 3px solid black;
+  background-color: white;
+}
+
+.visual text {
+  font-size: 20px;
+}
+
+.suggestion_block {
+  /*height: 350px;*/
+  width: 100%;
+  position: relative;
+  margin: 0px;
+  overflow: hidden; /* need this so that the top margin of its first child won't push it */
+  margin-bottom: 5px;
+}
+
+.suggestion_block .detail {
+  width: 300px;
+  max-height: 60px;
+  margin: 20px auto 0px;
+}
+
+.suggestion_block .chart {
+  width: 500px;
+  height: 400px;
+  margin: auto;
+}
+
+.suggestion_block button {
+  /*position: absolute;
+  left: 10px;
+  top: 20px;*/
+}
+
+.suggestion_block .accordion-heading {
+  height: 60px;
+  font-size: 20px;
+  line-height: 30px;
+  color: white;
+  text-align: center;
+  /*background-color: #d11800;*/
+}
+
+.suggestion_block .accordion-heading-expand {
+  position: absolute;
+  width: 100%;
+  top: 30px;
+  text-align: center;
+  color: white;
+  pointer-events: none;
+}
+
+.suggestion_block .accordion-heading:hover {
+  cursor: pointer;
+}
+
+.suggestion_block .accordion-body {
+  position: relative;
+}
+
+div.suggestion {
+  width: 350px;
+  height: 350px;
+}
+
+.blink_me {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {  
+  50% { opacity: 0; }
+}
+
+.chart_legend {
+  position: absolute;
+  left: 10px;
+  top: 30px;
+  font-style: italic;  
+}
+
+#chart_container div.chart-top-div {
+  width: 100%;
+  height: 30px;
+  font-size: 25px;
+  padding-left: 10px;
+  opacity: 0;
+  z-index: 10;
+  position: absolute;
+  bottom: 10px;
+  text-align: center;
+}
+
+.rect-variable {
+  /*width: 100px;
+  height: 50px;*/
+  /*rx: 8px;
+  ry: 8px;*/
+  fill: #fac863;
+  stroke: #5d4c46;
+  stroke-width: 2px;
+}
+
+.rect-variable.selected {
+  fill: #f99157;
+  /*fill: #7ec7a5;*/
+}
+
+.rect-variable.highlight, .rect-variable.selected.highlight {
+  /*stroke: #f9cc9d;*/
+  stroke: #d11800;
+  stroke-width: 3px;
+}
+
+.circle-variable {
+  /*width: 100px;
+  height: 50px;*/
+  /*rx: 8px;
+  ry: 8px;*/
+  /*fill: #fac863;*/
+  fill: lightgrey;
+  stroke: #5d4c46;
+  stroke-width: 2px;
+}
+
+.circle-variable.selected {
+  fill: #fac863;
+  /*fill: #f99157;*/
+  /*fill: #7ec7a5;*/
+}
+
+.circle-variable.highlight, .circle-variable.selected.highlight {
+  /*stroke: #f9cc9d;*/
+  stroke: #d11800;
+  stroke-width: 3px;
+}
+
+circle.edge-hovered {
+  fill: none;
+  stroke: #5d4c46;
+  stroke-width: 4px;  
+}
+
+g.g-variable:hover {
+  cursor: pointer;
+}
+
+g.g-variable text {
+  font-size: 15px;
+}
+
+/*
+    Color of graph edges
+*/
+line.line-relation {
+  stroke: #5d4c46;
+  stroke-width: 3px;
+}
+
+line.line-relation.selected {
+  stroke: #f99157;
+  /*stroke: #7ec7a5;*/
+}
+
+line.line-relation.highlight, line.line-relation.selected.highlight {
+  /*stroke: #f9cc9d;*/
+  stroke: #d11800;
+  stroke-width: 3px;
+}
+
+line.line-relation.newfound {
+  stroke: blue;
+}
+
+
+line.line-relation:hover {
+  cursor: pointer;
+}
+
+line marker#arrowstart > polygon {
+  /*fill: stroke: #5d4c46;*/
+  fill: red;
+}
+
+
+marker#arrowstart > polygon.selected {
+  fill: #f99157;
+}
+
+marker#arrowstart > polygon.highlight, marker#arrowstart > polygon.selected.highlight {
+  /*stroke: #f9cc9d;*/
+  fill: #d11800;
+}
+
+
+
+
+
+.facet {
+  overflow: hidden;
+}
+
+.side_title {
+  text-align: center;
+  height: 50px;
+  background-color: #333333;
+  color: white;
+  line-height: 50px;
+  font-size: 15px;
+  border: 1px solid white;
+}
+
+.side_title:hover {
+  cursor: pointer;
+}
+
+.side_category {
+  text-align: center;
+  height: 30px;
+  background-color: #555555;
+  color: white;
+  line-height: 30px;
+  font-size: 15px;
+  border: 1px solid white;
+}
+
+.side_category:hover {
+  cursor: pointer;
+}
+
+#filter_container {
+  width: 250px;
+  height: 600px;
+  position: absolute;
+  left: 200px;
+  top: 0px;
+}
+
+#chart_container {
+  width: 700px;
+  height: 700px;
+  position: absolute;
+  left: 603px;
+  top: 0px;
+  outline: 3px solid black;
+  background-color: white;
+}
+
+#chart_container .detail {
+  width: 700px;
+  height: 100px;
+  position: absolute;
+  top: 10px;
+  text-align: center;
+  font-size: 20px;
+  line-height: 20px;
+  /*color: gray;*/
+  font-style: italic;
+}
+
+.detail .variable {
+  font-weight: bold;
+}
+
+.detail .sig {
+  font-weight: bold;
+  color: green;
+}
+
+.detail .insig {
+  font-weight: bold;
+  color: red;
+}
+
+#chart_container_left {
+  width: 600px;
+  height: 520px;
+  position: absolute;
+  left: 200px;
+  top: 0px;
+}
+
+.bar-tooltip {
+  width: 150px;
+  padding: 2px 5px;
+}
+
+div.yMenu {
+  position: absolute;
+  width: 158px;
+  left: 50px;
+  top: 50px;
+}
+
+div.xMenu {
+  position: absolute;
+  width: 130px;
+  left: 350px;
+  top: 580px;
+}
+
+div.yMenu > button, div.xMenu > button {
+  width: 100%;
+}
+
+#chart_container .chart {
+  width: 700px;
+  height: 600px;
+}
+
+#chart_container .trend-center {
+  width: 50%;
+  height: 20px;
+  position: absolute;
+  top: 150px;
+  left: 30%;
+  text-align: center;
+  font-size: 100px;
+  line-height: 0px;
+  opacity: 0;
+}
+
+#chart_container .trend-center-bottom {
+  width: 50%;
+  height: 20px;
+  position: absolute;
+  top: 300px;
+  left: 30%;
+  text-align: center;
+  font-size: 100px;
+  line-height: 0px;
+  opacity: 0;
+}
+
+
+#chart_container .trend-left {
+  width: 50%;
+  height: 20px;
+  position: absolute;
+  top: 150px;
+  left: 10%;
+  text-align: center;
+  font-size: 100px;
+  line-height: 0px;
+  opacity: 0;
+}
+
+#chart_container .trend-right {
+  width: 50%;
+  height: 20px;
+  position: absolute;
+  top: 150px;
+  left: 50%;
+  text-align: center;
+  font-size: 100px;
+  line-height: 0px;
+  opacity: 0;
+}
+
+#suggestion_container .trend-center {
+  width: 50%;
+  height: 20px;
+  position: absolute;
+  top: 115px;
+  left: 30%;
+  text-align: center;
+  font-size: 60px;
+  line-height: 0px;
+  opacity: 0;
+}
+
+#suggestion_container .trend-center-bottom {
+  width: 50%;
+  height: 20px;
+  position: absolute;
+  top: 180px;
+  left: 30%;
+  text-align: center;
+  font-size: 60px;
+  line-height: 0px;
+  opacity: 0;
+}
+
+#suggestion_container .trend-left {
+  width: 50%;
+  height: 20px;
+  position: absolute;
+  top: 115px;
+  left: 10%;
+  text-align: center;
+  font-size: 60px;
+  line-height: 0px;
+  opacity: 0;
+}
+
+#suggestion_container .trend-right {
+  width: 50%;
+  height: 20px;
+  position: absolute;
+  top: 115px;
+  left: 50%;
+  text-align: center;
+  font-size: 60px;
+  line-height: 0px;
+  opacity: 0;
+}
+
+div.visual {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  /*width: 700px;
+  height: 600px;*/
+  /*width: 650px;
+  height: 550px;
+  left: 25px*/;
+  top: 30px;
+}
+
+div.visual circle {
+  opacity: 0.5;
+}
+
+
+
+.d3-tip {
+  width: 500px;
+  text-align: center;
+  line-height: 1.5;
+  padding: 12px;
+  background: black;
+  color: white;
+  border-radius: 4px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+#visualization {
+  width: 1000px;
+  margin-top: 70px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.button_g {
+  fill: #F0F0F0;
+  stroke-width: 1px;
+  stroke: gray;
+}
+
+.button_g:hover {
+  fill: #E0E0E0;
+  cursor: pointer;
+}
+
+.button_text {
+  fill: black;
+  stroke-width: 0px;
+}
+
+.button_rect_selected {
+  fill: #D46A6A;
+}
+
+.button_rect_history {
+  fill: #D0D0D0;
+}
+
+.criteria_button_selected {
+  fill: #73B55B;
+}
+
+.title {
+  fill: black;
+  font-size: 20px;
+}
+
+.filterbox {
+  width: 250px;
+  position: absolute;
+  top: 50px;
+  left: 5px;
+}
+
+.filter-control {
+  position: absolute;
+  left: 300px;
+  top: 50px;
+}

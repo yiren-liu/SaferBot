@@ -1,0 +1,18 @@
+<div class="side-comment <%= sectionClasses %>">
+  <a href="#" class="marker">
+    <span><%= comments.length %></span>
+  </a>
+  
+  <div class="comments-wrapper">
+    <ul class="comments">
+      <% _.each(comments, function( comment ){ %>
+        <%= _.template(commentTemplate, { comment: comment, currentUser: currentUser, formTemplate: formTemplate, self: commentTemplate }) %>
+      <% }) %>
+    </ul>
+    
+    <a href="#" class="add-comment">Leave a comment</a>
+    <% if (currentUser) { %>
+      <%= _.template(formTemplate, { currentUser: currentUser, formClass: 'comment-form', commentId: null }) %>
+    <% } %>
+  </div>
+</div>

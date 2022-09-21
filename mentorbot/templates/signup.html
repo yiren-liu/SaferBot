@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="jumbotron text-center mx-auto mt-3" style="width: 500px;">
+    <h2>Mentorbot</h2>
+    <!-- <p>This is a prototype of an interactive causal reasoning system.</p> -->
+  </div>
+  {% if error_message %}
+  {{ error_message }}
+  {% endif %}
+  <div class="card mt-5 mx-auto" id="login">
+    <div class="card-body">
+      <form class="form-horizontal" action="" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <p>
+          {{ field.label_tag }}<br>
+          {{ field }}
+          {% if field.help_text %}
+          {% if field.name == "password1" %}
+          <small style="color: grey" id="password1">
+            <ul>
+              <li>Your password can't be too similar to your other personal information.</li>
+              <li>Your password must contain at least 8 characters.</li>
+              <li>Your password can't be a commonly used password.</li>
+              <li>Your password can't be entirely numeric.</li>
+            </ul>
+          </small>
+          {% else %}
+          <br>
+          <small style="color: grey">{{ field.help_text }}</small>
+          {% endif %}
+          {% endif %}
+          {% for error in field.errors %}
+        <p style="color: red">{{ error }}</p>
+        {% endfor %}
+        </p>
+        {% endfor %}
+
+        <br>
+        <button type="submit" style="background-color: rgb(231, 100, 67); border-radius: 5px;">Sign up</button>
+
+      </form>
+
+    </div>
+  </div>
+
+
+</div>
+
+<!-- background image -->
+<style>
+	body {
+		background-image: url(../static/imgs/Background.png);
+		background-repeat: no-repeat;
+		background-position: center center;
+		background-attachment: fixed;
+		background-size: cover;
+	}
+</style>
+{% endblock %}

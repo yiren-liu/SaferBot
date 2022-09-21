@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block head %}
+
+<link rel="stylesheet" href="{% static 'css/visualization-mediation.css' %}">
+<!-- <script src="{% static 'js/d3.min.js' %}"></script> -->
+
+
+{% endblock %}
+
+
+{% block content %}
+
+	<div class="wrapper">
+		<h4 id="task_question"></h4>
+		<div style="padding-left: 100px">
+			<!-- <button class="btn btn-primary" type="button" onclick="constructCurrentGraph(); verifyGraph()">Verify Graph</button>
+			<button class="btn btn-info   " type="button" onclick="constructCurrentGraph(); extendGraph()">Extend Graph</button>
+			<button class="btn btn-default" type="button" onclick="clearGraphEdges()">Clear Edge</button>
+			<button class="btn btn-default" type="button" onclick="clearGraph()">Clear Graph</button> -->
+			Dataset:
+			<div class="dropdown" style="display: inline;">
+				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<span id="dataset_name">Dataset</span> <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+					<!-- <li><a class="dropdown-item" href="/tutorial">School A Admission</a></li> -->
+					<!-- <li><a class="dropdown-item" href="/practice">School B Admission</a></li> -->
+					<!-- <li><a class="dropdown-item" href="/task">Crowdfunding data</a></li> -->
+					<li><a class="dropdown-item dropdown-task" onclick="setTask('admission(X-Y)')" data-model="admission(X-Y)">School A</a></li>
+					<li><a class="dropdown-item dropdown-task" onclick="setTask('admission(X-MY)')" data-model="admission(X-MY)">School B</a></li>
+					<li><a class="dropdown-item dropdown-task" onclick="setTask('admission(X-M-Y)')" data-model="admission(X-M-Y)">School C</a></li>
+					<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(X-Y)')" data-model="campaign(X-Y)">Crowdfunding A</a></li>
+					<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(X-MY)')" data-model="campaign(X-MY)">Crowdfunding B</a></li>
+					<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(X-M-Y)')" data-model="campaign(X-M-Y)">Crowdfunding C</a></li>
+					
+					<!-- <li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(-)')">Crowdfunding (-)</a></li>
+					<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(X-Y)')">Crowdfunding (X-Y)</a></li>
+					<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(X-MY)')">Crowdfunding (X-MY)</a></li>
+					<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(XM-Y)')">Crowdfunding (XM-Y)</a></li>
+					<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(X-M-Y)')">Crowdfunding (X-M-Y)</a></li>
+					<li><a class="dropdown-item dropdown-task" onclick="setTask('campaign(X-(M-Y))')">Crowdfunding (X-(M-Y)</a></li> -->
+				</ul>
+			</div>
+		</div>
+		<br>
+		<div style="width: 2000px; height: 45px;">
+			<div class="panel-header" style="width: 294px;">Variables</div>
+			<div id="main_vis_header" class="panel-header" style="width: 702px;">Visualization</div>
+			<div id="related_vis_header" class="panel-header" style="width: 550px;">Related Visualizations</div>
+		</div>
+		<div style="position: relative; height: 700px;">
+			<div id="graph_container"></div>
+
+			<div id="chart_container">
+				<div class="chart"></div> <!--  the content is created in initChart() -->
+				<div class="detail"></div>
+			</div>
+
+			<div id="suggestion_container" class="accordion">
+
+			</div>
+			<div id="suggestion_container_cover"></div> <!-- Google Chart API has bugs when it is drawn on a hidden div. So we use a 'cover' to cover the suggestion_container, draw the visualizations under the cover, then collapse it, and uncover it. -->
+
+		</div>
+		<!-- <h4 id="task_finish">If you are satisfied with your answers and would like to end the task, click here: <button class="btn btn-default" id="done-btn">I'm finished</button> <a class="btn btn-success" id="next" style="display: none" href="/task">Next</a></h4> -->
+		<br>
+		<p>
+			<button class="btn btn-default" type="button" data-toggle="collapse" data-target="#detailPanel" aria-expanded="false" aria-controls="collapseExample">
+				Details
+			</button>
+		</p>
+		<div class="collapse" id="detailPanel">
+			<div class="accordion" id="detail">
+			</div>
+		</div>
+		<!-- <div id="variable_container"></div>-->
+		<!-- <div id="googlechart"></div> -->
+		
+		
+	</div>
+
+{% endblock %}
+
+{% block javascript %}
+	<!-- <script src="{% static 'js/jquery-2.1.3.min.js' %}"></script> -->
+	<!-- <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script> -->
+	<!-- for the new 'Material Chart' API -->
+	<script type="text/javascript">
+		var ASSISTING = '{{ interface_condition }}' !== 'control';
+		var configs = {
+			"condition": '{{ condition }}',
+			"task": '{{ task }}',
+			"campaigns_data_path": '{{ campaigns_data_path }}',
+			"variable_order": {{ variable_order }}
+		};
+
+		if (configs.task === 'campaign') {
+			$('#next').attr('href', '/postsurvey');
+		}
+		else if (configs.task === 'practice') {
+			$('#next').attr('href', '/task');
+		}
+	</script>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<!--
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>	
+	<script type="text/javascript">
+		google.load('visualization', '1.1', {'packages':['corechart']});
+	</script>
+-->
+	<script src="{% static 'js/util.js' %}"></script>
+	<script src="{% static 'js/datalib.js' %}"></script>
+	<script src="{% static 'js/FilterHelper.js' %}"></script>
+	<script src="{% static 'js/visualization-mediation.js' %}"></script>
+
+	<script type="text/javascript">
+		$(function(){
+			saveLog("PAGELOAD");
+
+			$('button#done-btn').click(function(){
+				saveLog("TASKDONE");
+				$('#next').fadeIn();
+			})
+		})
+	</script>
+
+	<template id="suggestion_block_template">
+		<div class="suggestion_block">
+			<div class="detail">
+				<button><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span></button>
+				<span class="description"></span>
+			</div>
+			<div class="chart">
+				<div class="visual"></div>
+				<div class="trend-center">&#10230;</div>
+				<div class="trend-center-bottom">&#8212;&#10230;</div>
+				<div class="trend-left">&#10230;</div>
+				<div class="trend-right">&#10230;</div>
+			</div>
+		</div>
+	</template>
+	<template id="suggestion_block_template_collapse">
+		<div class="suggestion_block accordion-group">
+			<div class="accordion-heading description">
+				<!-- <a class="accordion-toggle description" data-toggle="collapse" data-parent="#suggestion_container" href="#collapseOne"></a> -->
+				
+			</div>
+			<!-- <div class="accordion-heading-expand"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></div> -->
+			<div class="accordion-body collapse in" id="collapseOne">
+				<div class="bring-to-main-div">
+					<button class="bring-to-main"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"> </span> Draw in Main Board</button>
+				</div>
+				
+				<div class="chart">
+					<div class="visual"></div>
+					<div class="trend-center blink_me">&#10230;</div>
+					<div class="trend-center-bottom blink_me">&#8212;&#10230;</div>
+					<div class="trend-left blink_me">&#10230;</div>
+					<div class="trend-right blink_me">&#10230;</div>
+					
+				</div>
+			</div>
+			
+		</div>
+	</template>
+{% endblock %}

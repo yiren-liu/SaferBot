@@ -1,0 +1,308 @@
+{% extends 'base_nav.html' %}
+
+{% load staticfiles %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/draw_diagram.css' %}">
+<style type="text/css">
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="system-container p-4 mx-auto">
+	<h3>Dashboard</h3>
+	<div class="dropdown">
+		<button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="diagramMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			Select a Participant
+		</button>
+		<div class="dropdown-menu diagramMenu" aria-labelledby="diagramMenuButton" style="max-height: 300px; overflow-y: auto;">
+			<!-- {% for diagram in diagrams_data %}
+				<li username='{{ diagram.username }}'
+					context='{{ diagram.context }}'
+					label='{{ diagram.label }}'
+					class="dropdown-item">
+				{{ diagram.username }}</li>
+			{% endfor %} -->
+		</div>
+	</div>
+	<br>
+	<!-- <div class="CR">
+		
+	</div>
+ -->
+	<div class="d-flex CR-layout">
+		<div class="system-col crowd-CR-col">
+			<div class="crowd-CR h-100 d-flex flex-column disable-select">
+				<div>
+					<h5>Crowd's Beliefs</h5>	
+					<!-- <div class="button-list mb-2"></div> -->
+				</div>
+				<div class="panel-container panel-container-col" style="flex: 1 1 auto">
+					<div class="graph-ui" style="height: 450px"><svg></svg></div>
+					<hr>
+					<div class="variable-info-panel" style="height: 63px;">
+						Variable <span class="name font-weight-bold"><i>name</i></span> <span class="type badge badge-secondary"></span>: <span class="long-description"><i>description (hover over a variable to view its description)</i></span>
+					</div>
+					<hr>
+					<div class="panel-grow narrative-panel"></div>
+				</div>
+			</div>	
+		</div>
+		<div class="system-col individual-diagram-col">
+			<div class="individual-CR h-100 disable-select d-flex flex-column">
+				<div>
+					<h5><span class="pid">Participant</span>'s Causal Diagram</h5>	
+					<!-- <div class="button-list mb-2"></div> -->
+				</div>
+				<div class="panel-container panel-container-col" style="flex: 1 0 auto;">
+					<div class="graph-ui" style="height: 450px"><svg></svg></div>
+					<hr>
+					<div class="variable-info-panel" style="height: 63px;">
+						Variable <span class="name font-weight-bold"><i>name</i></span> <span class="type badge badge-secondary"></span>: <span class="long-description"><i>description (hover over a variable to view its description)</i></span>
+					</div>
+					<hr>
+					<div class="panel-grow narrative-panel"></div>
+				</div>
+			</div>	
+		</div>
+		
+		<div class="system-col data-col">
+			<div class="dataset-CR h-100 d-flex flex-column">
+				<div>
+					<h5>Dataset Causal Structure</h5>	
+					<!-- <div class="button-list mb-2"></div> -->
+				</div>
+				<div class="panel-container panel-container-col" style="flex: 1 0 auto;">
+					<div class="graph-ui" style="height: 450px"><svg></svg></div>
+					<hr>
+					<div class="variable-info-panel" style="height: 63px;">
+						Variable <span class="name font-weight-bold"><i>name</i></span> <span class="type badge badge-secondary"></span>: <span class="long-description"><i>description (hover over a variable to view its description)</i></span>
+					</div>
+					<hr>
+					<div class="panel-grow narrative-panel"></div>
+				</div>
+			</div>
+		</div>	
+		
+	</div>
+
+</div>
+
+	
+<!-- 	<div id="vega_vis" style="height: 600px; width: 700px;"></div>
+ -->
+	<!-- Consider moving this to template and append it programmtically. 
+	However, this is a pretty general component so it's ok to just put it here -->
+	<div class="modal fade" id="general_modal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+				</div>
+				<div class="modal-footer">
+					<!-- Don't use .d-none; otherwise, $.show() would not work. .d-none us !important -->
+					<button id="secondary_button" type="button" class="btn btn-sm btn-secondary" data-dismiss="modal" style="display: none"></button>
+					<button id="close_button" type="button" class="btn btn-sm btn-primary" data-dismiss="modal"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<!-- <p>
+		<button class="btn btn-default" type="button" data-toggle="collapse" data-target="#detailPanel" aria-expanded="false" aria-controls="collapseExample">
+			Details
+		</button>
+	</p>
+	<div class="collapse" id="detailPanel">
+		<div class="card card-block" id="detail">
+		</div>
+	</div> -->
+
+
+
+	<!-- <div id="variable_container"></div>-->
+	<!-- <div id="googlechart"></div> -->
+	<div id="main_alert_container">	
+		<div class="alert alert-dismissible" role="alert" style="display: none">
+			<span class="alert-text"></span>
+			<button type="button" class="close" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>	
+	
+	</div>
+
+</div>
+
+{% include "./va_templates.html" %}
+
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+	var data = {
+		"subjects_info": JSON.parse('{{ subjects_info | escapejs }}'),
+		"crowd_diagram": JSON.parse('{{ crowd_diagram | escapejs }}'),
+		"dataset_diagram": JSON.parse('{{ dataset_diagram | escapejs }}'),
+	}
+	// var test = '{{ test | escapejs }}';
+	
+	// var configs = {
+	// 	// variables from back-end
+	// 	"user": '{{ request.user.username }}',
+	// 	"condition": '{{ condition }}',
+	// 	"context": '{{ context }}',
+	// 	"saved_diagram": JSON.parse('{{ saved_diagram | escapejs }}'),
+	// 	// "peer_diagram": JSON.parse('{{ peer_diagram | escapejs }}'),
+	// 	"peer_diagrams": JSON.parse('{{ peer_diagrams | escapejs }}'),
+	// 	// "variable_order": {{ variable_order }},
+	// 	"variable_order": [...Array(100).keys()],
+	// 	// local setting
+	// 	"graph_editable": true,                 // default to true
+	// 	"data_visualization": false,            // enable/disable data visualization feature
+	// 	"data_regression": true,                // enable/disable regression feature
+	// 	"assisting": false,                     // enable/disable assisting features
+	// 	"hypothesis_input": false,              // enable/disable hypothesis input feature (popup hypothesis panel)
+	// 	"position_fixed": false,                // the eight variable placeholder on the graph
+	// 	"variable_shape": 'circle' || 'rect',   // shape of the variable
+	// 	"variable_hover_show_detail": true,     // enable/disable showing variable description on the top panel
+	// 	"variable_click_select": false,         // enable/disable variable selection by clicking
+	// 	"show_entered_hypotheses": true,        // show hypothesis on the middle right panel (allow editing)
+	// 	"add_new_variable": true,               // enable/disable adding new variable
+	// 	"visualize_stakeholder": false,         // enable/disable visualizing stakeholder 
+	// 	"relationship_inspiration": false,      // enable/disable "relationship inspiration" button
+	// 	"hint_after_writing_hypothesis": false, // show a reminder to tell what users to do after writing a hypothesis
+	// 	"save_and_load_graph": true,            // "save graph" and "load graph" buttons 
+	// 	"show_second_graph": false,             // show a separate graph into the interface
+	// 	// GraphUI setting
+	// 	"graph_ui_configs": {
+	// 		"variable_circle_r": 29,
+	// 	}
+	// };
+
+	// if (configs.task === 'campaign') {
+	// 	$('#next').attr('href', '/postsurvey');
+	// }
+	// else if (configs.task === 'practice') {
+	// 	$('#next').attr('href', '/task');
+	// }
+</script>
+<!-- Try out Vega -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/vega@5.9.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@4.0.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6.2.1"></script> -->
+
+<script src="{% static 'js/lodash-4.17.20.min.js' %}"></script>
+
+
+<script src="{% static 'js/FilterHelper.js' %}"></script> <!-- not sure what is this... -->
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="{% static 'js/util.js' %}"></script>
+<script src="{% static 'js/datalib.js' %}"></script>
+<script src="{% static 'js/modules/DataVariable.js' %}"></script>
+<script src="{% static 'js/modules/CausalDiagram.js' %}"></script>
+<script src="{% static 'js/modules/VisualSetting.js' %}"></script>
+<script src="{% static 'js/modules/GraphUI.js' %}"></script>
+<script src="{% static 'js/modules/CausalInspirationFeature.js' %}"></script>
+<script src="{% static 'js/modules/RegressionFeature.js' %}"></script>
+<script src="{% static 'js/modules/NarrativePanel.js' %}"></script>
+<script src="{% static 'js/modules/VizFeature.js' %}"></script>
+<script src="{% static 'js/modules/VICA.js' %}"></script>
+<script src="{% static 'js/modules/CR.js' %}"></script>
+<script src="{% static 'js/configuration.js' %}"></script>
+<script src="{% static 'js/diagram.js' %}"></script>
+
+<script type="text/javascript">
+	function entry() {
+		data.subjects_info.forEach(subject => {
+			$('.diagramMenu').append(
+				$(`<li>${subject.username} (${subject.condition})</li>`)
+					.attr('username', subject.username)
+					.attr('condition', subject.condition)
+					.addClass("dropdown-item")
+					.click(function(){
+						let username = $(this).attr('username');
+						let context = 'safety_app';
+						let label = 'task_final';
+						requestDiagram(username, context, label)
+							.then(response => {
+								if (response.status === 'success') {
+									showDiagram(response.data.variable_diagram);
+									$('span.pid').text(username)
+								}
+							})
+					})
+			)
+		})
+
+
+		// $('.diagramMenu li').click(function(){
+		// 	let username = $(this).attr('username');
+		// 	let context = $(this).attr('context');
+		// 	let label = $(this).attr('label');
+		// 	requestDiagram(username, context, label)
+		// 		.then(response => {
+		// 			if (response.status === 'success') {
+		// 				showDiagram(response.data.variable_diagram);
+		// 				$('span.pid').text(username)
+		// 			}
+		// 		})
+		// });
+
+		// draw the first diagram
+		$('.diagramMenu li:eq(0)').click();
+
+		// draw crowd diagram
+		crowdCR = new CR('crowd_diagram');
+		crowdCR.initSystem($('.crowd-CR'), {'layout': null});
+		crowdCR.setScenario(data.crowd_diagram.variable_diagram.variables, data.crowd_diagram.variable_diagram.causal_diagram);
+
+		// draw dataset diagram
+		datasetCR = new CR('dataset_diagram');
+		datasetCR.initSystem($('.dataset-CR'), {'layout': null});
+		datasetCR.setScenario(data.dataset_diagram.variable_diagram.variables, data.dataset_diagram.variable_diagram.causal_diagram);
+
+	}
+	
+	async function requestDiagram(username, context, label) {
+		let fields = {
+			'command': 'get_variable_diagram',
+			'username': username,
+			'context': context,
+			'label': label,
+		}
+
+		return $.ajax({
+			type: 'POST',
+			url: '/ajax/',
+			data: fields,
+		})
+	}
+
+	function showDiagram(variable_diagram) {
+		mainCR = new CR('participant_diagram');
+		mainCR.initSystem($('.individual-CR'), {'layout': null});
+		mainCR.setScenario(variable_diagram.variables, variable_diagram.causal_diagram);
+	}
+
+	$(async function() {
+		let status = await loadVariableSheet();
+
+		if (status === 'success') {
+			entry();
+		}
+	})
+</script>
+
+
+{% endblock %}

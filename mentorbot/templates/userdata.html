@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+	<h1>UserData</h1>
+	<dl class="dl-horizontal">
+		<dt>user_id:</dt>
+		<dd>{{ userdata.user_id }}</dd>
+
+		<dt>logs:</dt>
+		<dd>
+			<table class="table">
+				<tr>
+					<th>Timestamp</th>
+					<th>Path</th>
+					<th>Action</th>
+					<th>Msg</th>
+				</tr>
+				{% for log in userdata.logs %}
+				<tr>
+					<td>{{ log.timestamp }}</td>
+					<td>{{ log.path }}</td>
+					<td>{{ log.action }}</td>
+					{% if log.action == "VISUALIZE" %}
+					<td>{{ log.msg.vars }}</td>
+					{% else %}
+					<td>{{ log.msg }}</td>
+					{% endif %}
+				</tr>
+				{% endfor %}
+
+			</table>
+		</dd>		
+	</dl>
+</div>
+{% endblock %}
