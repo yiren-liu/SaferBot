@@ -1,4 +1,7 @@
-This project hosts the web server of the SaferBot website.
+# SaferBot
+
+This project hosts the web server of the SaferBot website --- web-based conversational system that aims to help with handling community safety incident reports by facilitating the interaction between users and safety administration agents.
+
 
 Add your own Google API key to "api/your-api-key.json" for DialogFlow
 And modify 
